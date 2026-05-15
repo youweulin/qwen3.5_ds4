@@ -277,6 +277,104 @@ traces/cache-key-lab-2026-05-15.json
 
 這次測試也抓到一個設計細節：第一版 `prefix_key` 不小心把 full prompt hash 放進 key，導致「同 prefix 換 user tail」會錯誤 miss。修正後，prefix scope 不再納入 `prompt_full_sha256`，只有 request scope 會納入。
 
+## Translation Workload Benchmark
+
+第一階段 smoke test 證明固定 prefix 會命中，但真正落地時更重要的是：
+
+> 大量翻譯文章時，固定翻譯 SOP / 術語表 / 品質規則能不能省時間？
+
+所以 repo 加入第三個測試：
+
+```text
+scripts/qwen_translation_cache_bench.py
+```
+
+這個 benchmark 使用合成日文文章段落，避免版權問題，並比較三種做法：
+
+| Group | 說明 |
+| --- | --- |
+| `cached_long_sop` | 固定 6000 字翻譯 SOP + 術語表，可吃 prefix cache |
+| `busted_long_sop` | 每次在 SOP 開頭加入不同 marker，模擬動態 prompt 污染，吃不到 cache |
+| `minimal_sop` | 很短的翻譯 prompt，速度快但缺少術語表與品質控管 |
+
+重跑：
+
+```sh
+python3 scripts/qwen_translation_cache_bench.py \
+  --base-url http://127.0.0.1:18180/v1 \
+  --model qwen3.5:4b \
+  --segments 4 \
+  --sop-chars 6000 \
+  --max-tokens 128 \
+  --trace-jsonl traces/translation-cache-bench-m1pro-2026-05-15.jsonl
+```
+
+### Translation Result
+
+本次 M1 Pro 實測：
+
+```text
+cached_long_sop[0]: TTFT 5.350s, latency 9.751s, cached_tokens 0
+cached_long_sop[1]: TTFT 1.465s, latency 5.889s, cached_tokens 1436
+cached_long_sop[2]: TTFT 1.462s, latency 5.756s, cached_tokens 1436
+cached_long_sop[3]: TTFT 1.480s, latency 5.868s, cached_tokens 1436
+
+busted_long_sop[0]: TTFT 5.452s, latency 9.892s, cached_tokens 0
+busted_long_sop[1]: TTFT 5.567s, latency 10.035s, cached_tokens 0
+busted_long_sop[2]: TTFT 5.485s, latency 9.867s, cached_tokens 0
+busted_long_sop[3]: TTFT 5.548s, latency 9.993s, cached_tokens 0
+
+minimal_sop avg: TTFT 0.421s, latency 4.775s, cached_tokens 0
+```
+
+Summary:
+
+```text
+cached_long_sop warm TTFT avg: 1.469s
+busted_long_sop warm TTFT avg: 5.533s
+TTFT speedup: 3.77x
+
+cached_long_sop warm latency avg: 5.838s
+busted_long_sop warm latency avg: 9.965s
+end-to-end speedup: 1.71x
+```
+
+Trace files:
+
+```text
+traces/translation-cache-bench-m1pro-2026-05-15.jsonl
+traces/translation-cache-bench-m1pro-2026-05-15.summary.json
+```
+
+### Translation Benchmark Takeaway
+
+`minimal_sop` 最快，因為它幾乎沒有前置規則要讀；但它不是同等品質對照。  
+它缺少：
+
+- 固定術語表
+- 台灣用語規則
+- 品牌語氣
+- 不杜撰規則
+- 社群可讀性規則
+- 品質管理要求
+
+真正有產品價值的是 `cached_long_sop`：
+
+```text
+第一次讀完整 SOP 比較慢
+後續每段文章沿用同一套翻譯規則
+TTFT 從 5.5s 左右降到 1.5s 左右
+輸出品質規則仍然保留
+```
+
+這很適合內容工廠型任務：
+
+```text
+固定翻譯 SOP / glossary / style guide
+  + 大量文章段落
+  + 人工審稿
+```
+
 ## 目前限制
 
 這次實驗證明的是：
@@ -328,10 +426,11 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 ## 下一步
 
 1. 測試 12k / 24k / 48k token prefix 的命中曲線。
-2. 測試 server restart 後是否能用 slot save path 或外部 state 做恢復。
-3. 把 metadata cache key 接到實際 KV 檔案命名與 header 驗證。
-4. 比較 Qwen3.5 4B、Qwen3.6 27B MTP、Gemma 3 4B MTP、DS4 Flash。
-5. 把這套接進實際 workflow，例如：
+2. 用更長文章測試翻譯吞吐量，例如 20 / 50 / 100 段。
+3. 測試 server restart 後是否能用 slot save path 或外部 state 做恢復。
+4. 把 metadata cache key 接到實際 KV 檔案命名與 header 驗證。
+5. 比較 Qwen3.5 4B、Qwen3.6 27B MTP、Gemma 3 4B MTP、DS4 Flash。
+6. 把這套接進實際 workflow，例如：
    - `japan-trend-fb-publisher`
    - `ai-trend-to-business-content`
    - rooming worker

@@ -1,0 +1,38 @@
+{
+  "busted_long_sop": {
+    "cached_tokens_avg": 0,
+    "cached_tokens_max": 0,
+    "latency_avg_s": 9.946684802247546,
+    "latency_p50_s": 9.992619791002653,
+    "ok": 4,
+    "total": 4,
+    "ttft_avg_s": 5.512924094000482,
+    "ttft_p50_s": 5.547818500002904,
+    "warm_latency_avg_s": 9.964884513998792,
+    "warm_ttft_avg_s": 5.53310547266786
+  },
+  "cached_long_sop": {
+    "cached_tokens_avg": 1077,
+    "cached_tokens_max": 1436,
+    "latency_avg_s": 6.815975604000414,
+    "latency_p50_s": 5.889066832998651,
+    "ok": 4,
+    "total": 4,
+    "ttft_avg_s": 2.4394318852500874,
+    "ttft_p50_s": 1.4795712920022197,
+    "warm_latency_avg_s": 5.837755777666946,
+    "warm_ttft_avg_s": 1.4691245693320525
+  },
+  "minimal_sop": {
+    "cached_tokens_avg": 0,
+    "cached_tokens_max": 0,
+    "latency_avg_s": 4.7749203127496,
+    "latency_p50_s": 4.777117042001919,
+    "ok": 4,
+    "total": 4,
+    "ttft_avg_s": 0.4213863022523583,
+    "ttft_p50_s": 0.405632042005891,
+    "warm_latency_avg_s": 4.74568731966671,
+    "warm_ttft_avg_s": 0.3975717086699054
+  }
+}
