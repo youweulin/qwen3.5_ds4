@@ -1,0 +1,87 @@
+{
+  "artifact_cache_key": "64652755b0eacd4847da6909d9004b9a58455acb3843413bcef8aa8637a721b5",
+  "artifact_header_schema": "qwen3.5-ds4-kv-artifact-v1",
+  "artifact_path": "artifacts/llamacpp-slot-artifacts/slot-64652755b0eacd4847da6909d9004b9a58455acb3843413bcef8aa8637a721b5.qkv",
+  "artifact_payload_sha256": "6928ec5a2627a91aba77d4f91fbf671b1e1a4d2a682c969b600e3bbc78c1a984",
+  "artifact_payload_size": 178449080,
+  "artifact_verify": {
+    "cache_key": "64652755b0eacd4847da6909d9004b9a58455acb3843413bcef8aa8637a721b5",
+    "cache_scope": "slot",
+    "checks": {
+      "expected_metadata_key_matches": true,
+      "filename_key_matches_header": true,
+      "filename_suffix": true,
+      "header_key_matches_metadata": true,
+      "payload_sha256_matches": true,
+      "payload_size_matches": true
+    },
+    "ok": true,
+    "path": "artifacts/llamacpp-slot-artifacts/slot-64652755b0eacd4847da6909d9004b9a58455acb3843413bcef8aa8637a721b5.qkv",
+    "payload_sha256": "6928ec5a2627a91aba77d4f91fbf671b1e1a4d2a682c969b600e3bbc78c1a984",
+    "payload_size": 178449080
+  },
+  "base_url": "http://127.0.0.1:18180",
+  "checks": {
+    "artifact_payload_matches_extracted_slot": true,
+    "artifact_verify_ok": true,
+    "raw_payload_matches_artifact_payload": true,
+    "restore_reported_tokens": true,
+    "restored_cache_effective": true
+  },
+  "extracted_slot_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/llamacpp-slots/qwen35-slot-from-qkv.bin",
+  "extracted_slot_sha256": "6928ec5a2627a91aba77d4f91fbf671b1e1a4d2a682c969b600e3bbc78c1a984",
+  "extracted_slot_size": 178449080,
+  "followup_after_restore": {
+    "content_preview": "{\"recommendation\":\"設定 n8n 自動化接 AI 的成本邊界",
+    "latency_s": 2.093220125003427,
+    "prompt_n": 518
+  },
+  "initial_completion": {
+    "content_preview": "{\"recommendation\":\"先確認話題是否為日本官方或主流媒體報導，",
+    "latency_s": 11.085599083999114,
+    "prompt_n": 3820
+  },
+  "raw_slot_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/llamacpp-slots/qwen35-slot-source.bin",
+  "raw_slot_sha256": "6928ec5a2627a91aba77d4f91fbf671b1e1a4d2a682c969b600e3bbc78c1a984",
+  "raw_slot_size": 178449080,
+  "schema": "qwen3.5-ds4-llamacpp-slot-artifact-lab-v1",
+  "slot_erase": {
+    "latency_s": 0.0012961669999640435,
+    "response": {
+      "id_slot": 0,
+      "n_erased": 3835
+    }
+  },
+  "slot_id": 0,
+  "slot_restore_from_extracted_artifact_payload": {
+    "latency_s": 0.024043040997639764,
+    "response": {
+      "filename": "qwen35-slot-from-qkv.bin",
+      "id_slot": 0,
+      "n_read": 178449080,
+      "n_restored": 3835,
+      "timings": {
+        "restore_ms": 23.436
+      }
+    }
+  },
+  "slot_save": {
+    "latency_s": 0.2049171250037034,
+    "response": {
+      "filename": "qwen35-slot-source.bin",
+      "id_slot": 0,
+      "n_saved": 3835,
+      "n_written": 178449080,
+      "timings": {
+        "save_ms": 198.88
+      }
+    }
+  },
+  "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/llamacpp-slots/",
+  "summary": {
+    "followup_prompt_n_after_restore": 518,
+    "initial_prompt_n": 3820,
+    "ok": true,
+    "raw_slot_mib": 170.18230438232422
+  }
+}

@@ -378,7 +378,93 @@ traces/kv-artifact-lab-2026-05-15.json
 檔名可索引、header 可驗證、payload 可防竄改、metadata 可拒用錯狀態。
 ```
 
-下一步才是把 synthetic payload 換成真正 runtime 存下來的 KV bytes。
+下一步是把 synthetic payload 換成真正 runtime 存下來的 KV bytes，並驗證抽出後可以 restore。
+
+## llama.cpp Slot Bytes Artifact Lab
+
+這一步已經把 synthetic payload 換成 llama.cpp 實際存出的 slot/state bytes。
+
+新增腳本：
+
+```text
+scripts/qwen_llamacpp_slot_artifact_lab.py
+```
+
+測試流程：
+
+```text
+1. 用 /completion 對 slot 0 跑一段 6000 字固定 prefix
+2. 呼叫 POST /slots/0?action=save
+3. 讀取 llama.cpp 實際寫出的 raw slot 檔
+4. 把 raw bytes 包進 .qkv artifact header
+5. 驗證 artifact filename/header/metadata/payload sha256
+6. 從 .qkv 抽出 payload，寫回 raw slot 檔
+7. 呼叫 POST /slots/0?action=restore
+8. 同 prefix 換問題，確認 restore 後仍能吃 cache
+```
+
+啟動 llama-server 時要注意 `--slot-save-path`：
+
+```text
+llama.cpp server 目前是用 slot_save_path + filename 直接相加。
+所以 slot save path 建議用尾端帶 / 的路徑。
+```
+
+重跑測試：
+
+```sh
+python3 scripts/qwen_llamacpp_slot_artifact_lab.py \
+  --base-url http://127.0.0.1:18180 \
+  --slot-save-path "$PWD/artifacts/llamacpp-slots/" \
+  --artifact-dir artifacts/llamacpp-slot-artifacts \
+  --trace-json traces/llamacpp-slot-artifact-lab-2026-05-15.json
+```
+
+### llama.cpp Slot Artifact Result
+
+本次 M1 Pro + Qwen3.5 4B 實測：
+
+```text
+raw_slot_size:      178,449,080 bytes
+raw_slot_mib:       170.18 MiB
+raw_slot_sha256:    6928ec5a2627a91aba77d4f91fbf671b1e1a4d2a682c969b600e3bbc78c1a984
+slot_save:          n_saved 3835, n_written 178,449,080, save_ms 198.880
+slot_restore:       n_restored 3835, n_read 178,449,080, restore_ms 23.436
+initial_prompt_n:   3820
+followup_prompt_n:  518
+```
+
+檢查結果：
+
+```text
+raw_payload_matches_artifact_payload: PASS
+artifact_payload_matches_extracted_slot: PASS
+artifact_verify_ok: PASS
+restore_reported_tokens: PASS
+restored_cache_effective: PASS
+```
+
+完整 trace：
+
+```text
+traces/llamacpp-slot-artifact-lab-2026-05-15.json
+```
+
+判讀：
+
+```text
+.qkv artifact 裡已經不是假 bytes，而是 llama.cpp 實際 save 出來的 slot bytes。
+從 .qkv 抽出 payload 後，restore 回 llama.cpp slot 成功。
+restore 後同 prefix 換問題，prompt_n 從 3820 降到 518，代表 cache 狀態真的被帶回來。
+```
+
+目前限制：
+
+```text
+這還是 llama.cpp 的 whole slot state，不是乾淨切好的 prefix-only KV slice。
+但它已經證明 metadata/header/hash 外殼可以承載真實 runtime bytes，
+而且 payload 抽出後能被 llama.cpp restore 使用。
+```
 
 ### KV Artifact Performance
 
