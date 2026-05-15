@@ -1,0 +1,433 @@
+{
+  "base_url": "http://127.0.0.1:18180",
+  "dry_run": true,
+  "events": [
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "cold_miss",
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "cold_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 2165,
+      "request_index": 0,
+      "source": "cold",
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "event": "cold_miss",
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "event": "cold_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 2177,
+      "request_index": 1,
+      "source": "cold",
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "disk_hit_restore",
+      "payload_size": 2097152,
+      "restore_latency_s": 0.0,
+      "restored": true,
+      "unix": 1778815274
+    },
+    {
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 512,
+      "request_index": 2,
+      "source": "disk",
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "evict_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "event": "cold_miss",
+      "unix": 1778815274,
+      "workflow_id": "rooming"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "event": "cold_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "rooming"
+    },
+    {
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "event": "disk_budget_evict",
+      "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "size": 2098514,
+      "unix": 1778815274
+    },
+    {
+      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 2165,
+      "request_index": 3,
+      "source": "cold",
+      "unix": 1778815274,
+      "workflow_id": "rooming"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "event": "cold_miss",
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "event": "cold_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "event": "disk_budget_evict",
+      "path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+      "size": 2098510,
+      "unix": 1778815274
+    },
+    {
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 2174,
+      "request_index": 4,
+      "source": "cold",
+      "unix": 1778815274,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "disk_hit_restore",
+      "payload_size": 2097152,
+      "restore_latency_s": 0.0,
+      "restored": true,
+      "unix": 1778815274
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "event": "continued_save",
+      "payload_size": 2097152,
+      "save_latency_s": 0.0,
+      "slot_response": {
+        "dry_run": true,
+        "n_saved": 42,
+        "n_written": 2097152
+      },
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    },
+    {
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "event": "completion",
+      "prompt_n": 512,
+      "request_index": 5,
+      "source": "disk",
+      "unix": 1778815274,
+      "workflow_id": "fb"
+    }
+  ],
+  "policy": {
+    "artifact_dir": "artifacts/runtime-cache-artifacts",
+    "continued_interval_requests": 2,
+    "disk_budget_mib": 5.0,
+    "index_path": "artifacts/runtime-cache-artifacts/runtime-cache-index.json",
+    "manager_policy_sha256": "344fc3c3e37eecf8bbb66351ac91d5e0c2534cfd71cebdf0a51c1cbb13496a3c",
+    "min_cache_chars": 1024,
+    "prefix_chars": 6000,
+    "sequence": [
+      "fb",
+      "translation",
+      "fb",
+      "rooming",
+      "translation",
+      "fb"
+    ],
+    "slot_save_path": "artifacts/runtime-cache-slots/"
+  },
+  "requests": [
+    {
+      "cache_hit": false,
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 2165,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+        "response": {
+          "dry_run": true,
+          "n_saved": 42,
+          "n_written": 2097152
+        },
+        "save_latency_s": 0.0,
+        "verify": {
+          "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+          "payload_sha256": "32f0d75ffdc170cc29f93d43daa891e0d13a632ab3646383dbd14790bbfcbe7f",
+          "payload_size": 2097152
+        }
+      },
+      "source": "cold",
+      "workflow_id": "fb"
+    },
+    {
+      "cache_hit": false,
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 2177,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+        "response": {
+          "dry_run": true,
+          "n_saved": 42,
+          "n_written": 2097152
+        },
+        "save_latency_s": 0.0,
+        "verify": {
+          "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+          "payload_sha256": "196bb1a48ab5d135e6901e7e3dc57ce4bc3892076f2e2e9a4412b71760a25b3a",
+          "payload_size": 2097152
+        }
+      },
+      "source": "cold",
+      "workflow_id": "translation"
+    },
+    {
+      "cache_hit": true,
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 512,
+      "restore_latency_s": 0.0,
+      "save": null,
+      "source": "disk",
+      "workflow_id": "fb"
+    },
+    {
+      "cache_hit": false,
+      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 2165,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+        "response": {
+          "dry_run": true,
+          "n_saved": 42,
+          "n_written": 2097152
+        },
+        "save_latency_s": 0.0,
+        "verify": {
+          "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+          "payload_sha256": "ba63891fa5f3d3e2bd21efc82a95a56772a222e13584900d6e11816f5f5a6e10",
+          "payload_size": 2097152
+        }
+      },
+      "source": "cold",
+      "workflow_id": "rooming"
+    },
+    {
+      "cache_hit": false,
+      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 2174,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+        "response": {
+          "dry_run": true,
+          "n_saved": 42,
+          "n_written": 2097152
+        },
+        "save_latency_s": 0.0,
+        "verify": {
+          "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+          "payload_sha256": "e8d74a3483ddee92a24cfcb6fe85beb01ed8359fa5c01b729d85385846298feb",
+          "payload_size": 2097152
+        }
+      },
+      "source": "cold",
+      "workflow_id": "translation"
+    },
+    {
+      "cache_hit": true,
+      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "completion_latency_s": 0.0,
+      "completion_preview": "{}",
+      "prompt_n": 512,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+        "response": {
+          "dry_run": true,
+          "n_saved": 42,
+          "n_written": 2097152
+        },
+        "save_latency_s": 0.0,
+        "verify": {
+          "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+          "payload_sha256": "75d5b82956661a909d54014107967eabc5e53e92f4da36c63bdc519445a1d55f",
+          "payload_size": 2097152
+        }
+      },
+      "source": "disk",
+      "workflow_id": "fb"
+    }
+  ],
+  "schema": "qwen3.5-ds4-runtime-cache-manager-lab-v1",
+  "slot_id": 0,
+  "summary": {
+    "artifact_bytes": 4197024,
+    "artifact_count": 2,
+    "artifact_mib": 4.002593994140625,
+    "cache_hits": 2,
+    "cache_misses": 4,
+    "disk_budget_evictions": 2,
+    "ok": true,
+    "requests": 6,
+    "saves_by_reason": {
+      "cold": 4,
+      "continued": 1,
+      "evict": 1
+    }
+  }
+}

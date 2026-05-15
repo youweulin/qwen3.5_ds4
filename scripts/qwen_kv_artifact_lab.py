@@ -48,9 +48,9 @@ def artifact_filename(metadata: CacheMetadata) -> str:
     return f"{metadata.cache_scope}-{cache_key(metadata)}{ARTIFACT_SUFFIX}"
 
 
-def build_header(metadata: CacheMetadata, payload: bytes) -> dict[str, Any]:
+def build_header(metadata: CacheMetadata, payload: bytes, extra_header: dict[str, Any] | None = None) -> dict[str, Any]:
     key = cache_key(metadata)
-    return {
+    header = {
         "artifact_schema": "qwen3.5-ds4-kv-artifact-v1",
         "key_domain": KEY_DOMAIN,
         "cache_key": key,
@@ -61,11 +61,19 @@ def build_header(metadata: CacheMetadata, payload: bytes) -> dict[str, Any]:
         "created_unix": int(time.time()),
         "created_by": "qwen_kv_artifact_lab.py",
     }
+    if extra_header:
+        header.update(extra_header)
+    return header
 
 
-def write_artifact(directory: Path, metadata: CacheMetadata, payload: bytes) -> Path:
+def write_artifact(
+    directory: Path,
+    metadata: CacheMetadata,
+    payload: bytes,
+    extra_header: dict[str, Any] | None = None,
+) -> Path:
     directory.mkdir(parents=True, exist_ok=True)
-    header = build_header(metadata, payload)
+    header = build_header(metadata, payload, extra_header)
     header_bytes = canonical_json(header).encode("utf-8")
     path = directory / artifact_filename(metadata)
     with path.open("wb") as handle:

@@ -1,0 +1,69 @@
+{
+  "artifact_dir": "artifacts/kv-cache-lab-smoke",
+  "base_cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+  "payload_bytes": 4096,
+  "results": [
+    {
+      "actual_ok": true,
+      "error": null,
+      "expected_ok": true,
+      "name": "valid_artifact",
+      "pass": true,
+      "result": {
+        "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+        "cache_scope": "prefix",
+        "checks": {
+          "expected_metadata_key_matches": true,
+          "filename_key_matches_header": true,
+          "filename_suffix": true,
+          "header_key_matches_metadata": true,
+          "payload_sha256_matches": true,
+          "payload_size_matches": true
+        },
+        "ok": true,
+        "path": "artifacts/kv-cache-lab-smoke/valid/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+        "payload_sha256": "8a74be2c19519d1ef66190e01226dfbcfd8026f2c194bdaa3633b75dba2021f0",
+        "payload_size": 4096
+      }
+    },
+    {
+      "actual_ok": false,
+      "error": "filename_key_matches_header",
+      "expected_ok": false,
+      "name": "filename_key_mismatch",
+      "pass": true,
+      "result": null
+    },
+    {
+      "actual_ok": false,
+      "error": "payload_sha256_matches",
+      "expected_ok": false,
+      "name": "payload_tamper",
+      "pass": true,
+      "result": null
+    },
+    {
+      "actual_ok": false,
+      "error": "header_key_matches_metadata,expected_metadata_key_matches",
+      "expected_ok": false,
+      "name": "header_metadata_tamper",
+      "pass": true,
+      "result": null
+    },
+    {
+      "actual_ok": false,
+      "error": "expected_metadata_key_matches",
+      "expected_ok": false,
+      "name": "expected_metadata_mismatch",
+      "pass": true,
+      "result": null
+    }
+  ],
+  "schema": "qwen3.5-ds4-kv-artifact-lab-v1",
+  "summary": {
+    "failed": 0,
+    "passed": 5,
+    "total": 5
+  },
+  "valid_artifact": "artifacts/kv-cache-lab-smoke/valid/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv"
+}

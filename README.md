@@ -755,6 +755,111 @@ active RAM/VRAM 仍要保留目前正在工作的 context。
 切回來用 19ms restore，避免 9s prefill。
 ```
 
+## DS4-style Runtime Cache Manager Lab
+
+在參考 DS4 之後，新增第一版 B 路線原型：
+
+```text
+scripts/qwen_ds4_runtime_cache_manager_lab.py
+```
+
+這一步先不改 llama.cpp C++，而是在 runtime manager 層把 DS4 的政策做出來：
+
+```text
+runtime 內建自動 cache manager
+prompt prefix hash
+metadata header
+save/restore llama.cpp slot
+cold / continued / evict policy
+disk budget eviction
+```
+
+它和 DS4 一樣是「一個 live session + SSD checkpoint」思路，不是把 active KV buffer 直接搬到 SSD 分頁執行。  
+所以目前省的是切換 workflow 時的重算時間，不是單一 active context 的 KV RAM。
+
+重跑 dry-run policy 測試：
+
+```sh
+python3 scripts/qwen_ds4_runtime_cache_manager_lab.py \
+  --dry-run \
+  --clean \
+  --disk-budget-mib 5 \
+  --dry-run-payload-bytes 2097152 \
+  --trace-json traces/runtime-cache-manager-lab-dryrun-2026-05-15.json
+```
+
+接真實 llama-server 時：
+
+```sh
+python3 scripts/qwen_ds4_runtime_cache_manager_lab.py \
+  --slot-save-path "$PWD/artifacts/runtime-cache-slots/" \
+  --artifact-dir artifacts/runtime-cache-artifacts \
+  --trace-json traces/runtime-cache-manager-lab-2026-05-15.json \
+  --sequence fb,translation,fb,rooming,translation,fb
+```
+
+### Runtime Manager Dry-run Result
+
+本次 dry-run 故意把 disk budget 設小，確認 eviction policy 會啟動：
+
+```text
+requests:              6
+cache_hits:            2
+cache_misses:          4
+saves_by_reason:       cold 4, evict 1, continued 1
+disk_budget_evictions: 2
+artifact_count:        2
+artifact_mib:          4.00
+```
+
+Request flow：
+
+```text
+fb:          cold -> cold_save
+translation: cold -> cold_save
+fb:          disk_hit_restore
+rooming:     evict current fb -> cold -> cold_save -> disk_budget_evict
+translation: cold again because previous translation artifact was evicted
+fb:          disk_hit_restore -> continued_save
+```
+
+完整 trace：
+
+```text
+traces/runtime-cache-manager-lab-dryrun-2026-05-15.json
+```
+
+這代表現在已經有 DS4-style 的政策骨架：
+
+```text
+miss 時 cold save
+切換 workflow 前 evict save
+回到舊 workflow 時 disk restore
+命中到一定次數後 continued save
+超過磁碟預算後淘汰低價值 artifact
+```
+
+### 和 DS4 的差異
+
+DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。  
+我們目前的 payload 是 llama.cpp `/slots?action=save` 存出的 whole slot state。
+
+所以目前還有兩個限制：
+
+```text
+1. artifact 是 whole slot，不是乾淨的 prefix-only KV slice。
+2. restore 後仍依賴 llama.cpp cache_prompt 去對齊共同 prefix。
+```
+
+但這已經足夠先驗證產品政策：
+
+```text
+哪些 workflow 值得 cache
+disk budget 應該怎麼設
+切換 skill/agent 時能省多少 prefill
+哪些 metadata 必須進 key 才安全
+```
+
 ### KV Artifact Performance
 
 為了確認這層外殼本身不會變成瓶頸，另外加入：
