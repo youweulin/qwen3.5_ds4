@@ -1,0 +1,155 @@
+{
+  "name": "AI - Content Repurpose Review Queue",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "content-repurpose-review",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-content-repurpose",
+      "name": "Webhook: Source Content",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "source_text",
+              "type": "string",
+              "value": "={{$json.body?.source_text || $json.body?.transcript || $json.body?.article || ''}}"
+            },
+            {
+              "name": "source_name",
+              "type": "string",
+              "value": "={{$json.body?.source_name || 'manual input'}}"
+            },
+            {
+              "name": "policy_id",
+              "type": "string",
+              "value": "content-repurpose-review"
+            }
+          ]
+        }
+      },
+      "id": "set-content-input",
+      "name": "Normalize Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b', temperature: 0.2, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'Use policy n8n_templates/policies/content-repurpose-review.md. Return valid JSON only.' }, { role: 'user', content: JSON.stringify({ source_name: $json.source_name, source_text: $json.source_text }) } ] } }}"
+      },
+      "id": "ai-content-repurpose",
+      "name": "Local AI: Repurpose Drafts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "review_status",
+              "type": "string",
+              "value": "needs_review"
+            },
+            {
+              "name": "workflow",
+              "type": "string",
+              "value": "content-repurpose-review"
+            },
+            {
+              "name": "ai_result",
+              "type": "string",
+              "value": "={{JSON.stringify($json.choices?.[0]?.message?.content || $json)}}"
+            },
+            {
+              "name": "created_at",
+              "type": "string",
+              "value": "={{$now.toISO()}}"
+            }
+          ]
+        }
+      },
+      "id": "set-content-review-row",
+      "name": "Build Review Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [760, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$env.REVIEW_SHEET_ID}}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Content Review"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        }
+      },
+      "id": "sheet-content-review",
+      "name": "Google Sheets: Review Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1020, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, status: 'queued_for_review', workflow: 'content-repurpose-review' } }}"
+      },
+      "id": "respond-content",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1280, 0]
+    }
+  ],
+  "connections": {
+    "Webhook: Source Content": {
+      "main": [[{ "node": "Normalize Input", "type": "main", "index": 0 }]]
+    },
+    "Normalize Input": {
+      "main": [[{ "node": "Local AI: Repurpose Drafts", "type": "main", "index": 0 }]]
+    },
+    "Local AI: Repurpose Drafts": {
+      "main": [[{ "node": "Build Review Row", "type": "main", "index": 0 }]]
+    },
+    "Build Review Row": {
+      "main": [[{ "node": "Google Sheets: Review Queue", "type": "main", "index": 0 }]]
+    },
+    "Google Sheets: Review Queue": {
+      "main": [[{ "node": "Respond", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

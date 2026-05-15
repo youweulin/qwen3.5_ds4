@@ -1,0 +1,60 @@
+{
+  "schema": "qwen3.5-ds4-n8n-template-catalog-v1",
+  "updated": "2026-05-15",
+  "templates": [
+    {
+      "id": "content-repurpose-review",
+      "workflow": "workflows/content-repurpose-review.json",
+      "policy": "policies/content-repurpose-review.md",
+      "priority": 1,
+      "for": ["consultant", "coach", "creator", "personal-brand"],
+      "value": "Turn one source article/transcript into FB, IG, Threads, and email drafts with human review.",
+      "cache_value": "high"
+    },
+    {
+      "id": "lead-intake-crm-followup",
+      "workflow": "workflows/lead-intake-crm-followup.json",
+      "policy": "policies/lead-intake-crm-followup.md",
+      "priority": 2,
+      "for": ["solo-founder", "service-business", "consultant"],
+      "value": "Normalize inbound leads, score intent, draft follow-up, and append to CRM sheet.",
+      "cache_value": "medium"
+    },
+    {
+      "id": "customer-support-triage",
+      "workflow": "workflows/customer-support-triage.json",
+      "policy": "policies/customer-support-triage.md",
+      "priority": 3,
+      "for": ["ecommerce", "course-seller", "small-team"],
+      "value": "Classify customer messages, draft replies, and flag urgent cases.",
+      "cache_value": "high"
+    },
+    {
+      "id": "invoice-order-digest",
+      "workflow": "workflows/invoice-order-digest.json",
+      "policy": "policies/invoice-order-digest.md",
+      "priority": 4,
+      "for": ["ecommerce", "agency", "freelancer"],
+      "value": "Summarize daily orders/invoices and create shipment or admin checklist.",
+      "cache_value": "medium"
+    },
+    {
+      "id": "ai-trend-to-business-post",
+      "workflow": "workflows/ai-trend-to-business-post.json",
+      "policy": "policies/ai-trend-to-business-post.md",
+      "priority": 5,
+      "for": ["ai-consultant", "creator", "coach"],
+      "value": "Convert AI trend notes into practical Traditional Chinese business content.",
+      "cache_value": "high"
+    },
+    {
+      "id": "review-monitor-reply-draft",
+      "workflow": "workflows/review-monitor-reply-draft.json",
+      "policy": "policies/review-monitor-reply-draft.md",
+      "priority": 6,
+      "for": ["local-business", "restaurant", "clinic", "store"],
+      "value": "Draft polite replies for reviews/comments and flag reputation risks.",
+      "cache_value": "high"
+    }
+  ]
+}

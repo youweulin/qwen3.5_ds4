@@ -1,0 +1,81 @@
+{
+  "name": "AI - Review Monitor Reply Draft",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "review-reply-draft",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-review",
+      "name": "Webhook: Review or Comment",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions'}}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b', temperature: 0.1, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'Use policy n8n_templates/policies/review-monitor-reply-draft.md. Return valid JSON only.' }, { role: 'user', content: JSON.stringify($json.body || $json) } ] } }}"
+      },
+      "id": "ai-review-reply",
+      "name": "Local AI: Draft Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "workflow", "type": "string", "value": "review-monitor-reply-draft" },
+            { "name": "review_status", "type": "string", "value": "needs_owner_review" },
+            { "name": "ai_result", "type": "string", "value": "={{$json.choices?.[0]?.message?.content || JSON.stringify($json)}}" },
+            { "name": "created_at", "type": "string", "value": "={{$now.toISO()}}" }
+          ]
+        }
+      },
+      "id": "set-review-reply-row",
+      "name": "Build Review Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.REVIEW_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Review Replies" },
+        "columns": { "mappingMode": "autoMapInputData" }
+      },
+      "id": "sheet-review-replies",
+      "name": "Google Sheets: Reply Review",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [780, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, status: 'reply_draft_queued' } }}"
+      },
+      "id": "respond-review",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1040, 0]
+    }
+  ],
+  "connections": {
+    "Webhook: Review or Comment": { "main": [[{ "node": "Local AI: Draft Reply", "type": "main", "index": 0 }]] },
+    "Local AI: Draft Reply": { "main": [[{ "node": "Build Review Row", "type": "main", "index": 0 }]] },
+    "Build Review Row": { "main": [[{ "node": "Google Sheets: Reply Review", "type": "main", "index": 0 }]] },
+    "Google Sheets: Reply Review": { "main": [[{ "node": "Respond", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,81 @@
+{
+  "name": "AI - Trend Notes to Business Post",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ai-trend-business-post",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-ai-trend",
+      "name": "Webhook: Trend Notes",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions'}}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b', temperature: 0.3, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'Use policy n8n_templates/policies/ai-trend-to-business-post.md. Return valid JSON only.' }, { role: 'user', content: JSON.stringify($json.body || $json) } ] } }}"
+      },
+      "id": "ai-trend-post",
+      "name": "Local AI: Draft Business Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "workflow", "type": "string", "value": "ai-trend-to-business-post" },
+            { "name": "review_status", "type": "string", "value": "needs_review" },
+            { "name": "ai_result", "type": "string", "value": "={{$json.choices?.[0]?.message?.content || JSON.stringify($json)}}" },
+            { "name": "created_at", "type": "string", "value": "={{$now.toISO()}}" }
+          ]
+        }
+      },
+      "id": "set-ai-trend-review",
+      "name": "Build Review Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.REVIEW_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "AI Trend Review" },
+        "columns": { "mappingMode": "autoMapInputData" }
+      },
+      "id": "sheet-ai-trend-review",
+      "name": "Google Sheets: AI Trend Review",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [780, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, status: 'queued_for_review', workflow: 'ai-trend-to-business-post' } }}"
+      },
+      "id": "respond-ai-trend",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1040, 0]
+    }
+  ],
+  "connections": {
+    "Webhook: Trend Notes": { "main": [[{ "node": "Local AI: Draft Business Post", "type": "main", "index": 0 }]] },
+    "Local AI: Draft Business Post": { "main": [[{ "node": "Build Review Row", "type": "main", "index": 0 }]] },
+    "Build Review Row": { "main": [[{ "node": "Google Sheets: AI Trend Review", "type": "main", "index": 0 }]] },
+    "Google Sheets: AI Trend Review": { "main": [[{ "node": "Respond", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

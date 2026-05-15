@@ -1,0 +1,64 @@
+{
+  "name": "AI - Invoice Order Daily Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "days", "triggerAtHour": 18 }]
+        }
+      },
+      "id": "schedule-order-digest",
+      "name": "Schedule: Daily 18:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.REVIEW_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Orders" }
+      },
+      "id": "sheet-read-orders",
+      "name": "Google Sheets: Read Orders",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions'}}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b', temperature: 0, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'Use policy n8n_templates/policies/invoice-order-digest.md. Return valid JSON only.' }, { role: 'user', content: JSON.stringify($items().map(i => i.json)) } ] } }}"
+      },
+      "id": "ai-order-digest",
+      "name": "Local AI: Digest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.REVIEW_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Daily Digest" },
+        "columns": { "mappingMode": "autoMapInputData" }
+      },
+      "id": "sheet-daily-digest",
+      "name": "Google Sheets: Daily Digest",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [780, 0]
+    }
+  ],
+  "connections": {
+    "Schedule: Daily 18:00": { "main": [[{ "node": "Google Sheets: Read Orders", "type": "main", "index": 0 }]] },
+    "Google Sheets: Read Orders": { "main": [[{ "node": "Local AI: Digest", "type": "main", "index": 0 }]] },
+    "Local AI: Digest": { "main": [[{ "node": "Google Sheets: Daily Digest", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Asia/Taipei" }
+}

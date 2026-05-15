@@ -1,0 +1,81 @@
+{
+  "name": "AI - Customer Support Triage",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-support-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "customer_message", "type": "string", "value": "={{$json.customer_message || $json.text || '貼上客服訊息測試'}}" },
+            { "name": "customer_email", "type": "string", "value": "={{$json.customer_email || ''}}" }
+          ]
+        }
+      },
+      "id": "set-support-input",
+      "name": "Normalize Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions'}}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b', temperature: 0.1, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'Use policy n8n_templates/policies/customer-support-triage.md. Return valid JSON only.' }, { role: 'user', content: JSON.stringify({ customer_email: $json.customer_email, customer_message: $json.customer_message }) } ] } }}"
+      },
+      "id": "ai-support-triage",
+      "name": "Local AI: Triage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "name": "workflow", "type": "string", "value": "customer-support-triage" },
+            { "name": "review_status", "type": "string", "value": "needs_review" },
+            { "name": "ai_result", "type": "string", "value": "={{$json.choices?.[0]?.message?.content || JSON.stringify($json)}}" },
+            { "name": "created_at", "type": "string", "value": "={{$now.toISO()}}" }
+          ]
+        }
+      },
+      "id": "set-support-review",
+      "name": "Build Support Review Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [760, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.REVIEW_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Support Review" },
+        "columns": { "mappingMode": "autoMapInputData" }
+      },
+      "id": "sheet-support",
+      "name": "Google Sheets: Support Review",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1020, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Normalize Message", "type": "main", "index": 0 }]] },
+    "Normalize Message": { "main": [[{ "node": "Local AI: Triage", "type": "main", "index": 0 }]] },
+    "Local AI: Triage": { "main": [[{ "node": "Build Support Review Row", "type": "main", "index": 0 }]] },
+    "Build Support Review Row": { "main": [[{ "node": "Google Sheets: Support Review", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

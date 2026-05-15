@@ -1750,6 +1750,67 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 
 這樣每次只變 tail，prefix 就能吃 cache。
 
+## n8n Template Data Area
+
+新增：
+
+```text
+n8n_templates/
+```
+
+這個資料區把「本地 AI 引擎」和「小企業 n8n 自動化」接起來：
+
+```text
+n8n:
+  webhook / schedule / Google Sheet / Gmail / review queue
+
+Qwen3.5 DS4-style engine:
+  固定 policy prefix
+  save_prefix / restore_prefix
+  runtime identity verification
+  重複工作省 prefill
+```
+
+目前模板：
+
+```text
+n8n_templates/workflows/content-repurpose-review.json
+n8n_templates/workflows/lead-intake-crm-followup.json
+n8n_templates/workflows/customer-support-triage.json
+n8n_templates/workflows/invoice-order-digest.json
+n8n_templates/workflows/ai-trend-to-business-post.json
+n8n_templates/workflows/review-monitor-reply-draft.json
+```
+
+每個 workflow 都有對應 AI policy：
+
+```text
+n8n_templates/policies/
+```
+
+這些 policy 是固定 prefix，很適合進 cache：
+
+```text
+第一次：
+  prefill policy
+  save_prefix
+
+之後每筆任務：
+  restore_prefix
+  只跑新的表單 / 文章 / 客服訊息 / 訂單資料
+```
+
+個人創業最優先先接：
+
+```text
+1. content-repurpose-review
+2. lead-intake-crm-followup
+3. customer-support-triage
+4. ai-trend-to-business-post
+```
+
+這幾個都是重複工作，增速最容易有感。
+
 ## 下一步
 
 1. C++ Phase 3：探索 prefix block index，先做可列出/可驗證/可淘汰 block，不急著 paging。
