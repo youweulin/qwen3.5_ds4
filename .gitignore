@@ -15,6 +15,9 @@ outputs/
 *.docx
 
 # Local cache/state
+.env
+.env.local
+.env.*.local
 .qwen-slots/
 .qwen-worker/
 .rooming-server/

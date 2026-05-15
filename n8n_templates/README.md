@@ -19,6 +19,18 @@
 
 ## Recommended Environment Variables
 
+範本：
+
+```text
+env.example
+```
+
+詳細說明：
+
+```text
+ENVIRONMENT.md
+```
+
 ```text
 LOCAL_AI_BASE_URL=http://host.docker.internal:18180/v1/chat/completions
 LOCAL_AI_MODEL=qwen3.5:4b
