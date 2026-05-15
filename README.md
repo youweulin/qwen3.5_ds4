@@ -1775,6 +1775,7 @@ Qwen3.5 DS4-style engine:
 
 ```text
 n8n_templates/workflows/content-repurpose-review.json
+n8n_templates/workflows/ai-provider-speed-cost-benchmark.json
 n8n_templates/workflows/lead-intake-crm-followup.json
 n8n_templates/workflows/customer-support-triage.json
 n8n_templates/workflows/invoice-order-digest.json
@@ -1803,6 +1804,7 @@ n8n_templates/policies/
 個人創業最優先先接：
 
 ```text
+0. ai-provider-speed-cost-benchmark
 1. content-repurpose-review
 2. lead-intake-crm-followup
 3. customer-support-triage
@@ -1810,6 +1812,27 @@ n8n_templates/policies/
 ```
 
 這幾個都是重複工作，增速最容易有感。
+
+`ai-provider-speed-cost-benchmark` 用來比較：
+
+```text
+本地 Qwen / DS4-style engine
+vs
+雲端 OpenAI-compatible API
+```
+
+同一個 prompt 會記錄：
+
+```text
+latency_ms
+prompt_tokens
+completion_tokens
+estimated_cost_usd
+speed_ratio_cloud_over_local
+cost_ratio_cloud_over_local
+```
+
+這樣可以實測哪些 n8n 任務應該跑本地，哪些任務才值得送雲端。
 
 ## 下一步
 

@@ -1,0 +1,185 @@
+{
+  "name": "AI - Local vs Cloud Speed Cost Benchmark",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-benchmark-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "policy_name",
+              "type": "string",
+              "value": "content-repurpose-review"
+            },
+            {
+              "name": "prompt",
+              "type": "string",
+              "value": "請把以下內容改寫成一篇台灣繁中 FB 貼文，不放連結，保留來源名稱即可。內容：本地 AI 工作流如果有固定 SOP，可以用 prefix cache 減少重複 prefill。"
+            },
+            {
+              "name": "max_tokens",
+              "type": "number",
+              "value": 256
+            }
+          ]
+        }
+      },
+      "id": "set-benchmark-input",
+      "name": "Set Benchmark Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst localUrl = $env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions';\nconst localModel = $env.LOCAL_AI_MODEL || 'qwen3.5:4b';\nconst cloudUrl = $env.CLOUD_AI_BASE_URL || '';\nconst cloudModel = $env.CLOUD_AI_MODEL || '';\nconst cloudApiKey = $env.CLOUD_AI_API_KEY || '';\n\nconst prompt = input.prompt;\nconst maxTokens = Number(input.max_tokens || 256);\nconst policyName = input.policy_name || 'manual';\n\nconst localInputUsdPer1k = Number($env.LOCAL_AI_INPUT_USD_PER_1K || 0);\nconst localOutputUsdPer1k = Number($env.LOCAL_AI_OUTPUT_USD_PER_1K || 0);\nconst cloudInputUsdPer1k = Number($env.CLOUD_AI_INPUT_USD_PER_1K || 0);\nconst cloudOutputUsdPer1k = Number($env.CLOUD_AI_OUTPUT_USD_PER_1K || 0);\n\nfunction buildBody(model) {\n  return {\n    model,\n    temperature: 0.2,\n    max_tokens: maxTokens,\n    messages: [\n      {\n        role: 'system',\n        content: `Use policy ${policyName}. Return concise Traditional Chinese content.`\n      },\n      {\n        role: 'user',\n        content: prompt\n      }\n    ]\n  };\n}\n\nfunction usageOf(result) {\n  const usage = result.usage || {};\n  const promptTokens = Number(usage.prompt_tokens || usage.input_tokens || 0);\n  const completionTokens = Number(usage.completion_tokens || usage.output_tokens || 0);\n  const totalTokens = Number(usage.total_tokens || promptTokens + completionTokens || 0);\n  return { promptTokens, completionTokens, totalTokens };\n}\n\nfunction estimateCost(usage, inRate, outRate) {\n  return (usage.promptTokens / 1000) * inRate + (usage.completionTokens / 1000) * outRate;\n}\n\nasync function callProvider(provider, url, model, apiKey, inRate, outRate) {\n  if (!url || !model) {\n    return {\n      provider,\n      skipped: true,\n      error: 'missing url or model',\n      latency_ms: null,\n      prompt_tokens: 0,\n      completion_tokens: 0,\n      total_tokens: 0,\n      estimated_cost_usd: 0\n    };\n  }\n\n  const started = Date.now();\n  try {\n    const headers = { 'Content-Type': 'application/json' };\n    if (apiKey) headers.Authorization = `Bearer ${apiKey}`;\n\n    const result = await this.helpers.httpRequest({\n      method: 'POST',\n      url,\n      headers,\n      body: buildBody(model),\n      json: true,\n      timeout: 120000\n    });\n\n    const latencyMs = Date.now() - started;\n    const usage = usageOf(result);\n    const content = result.choices?.[0]?.message?.content || result.output_text || '';\n    return {\n      provider,\n      skipped: false,\n      model,\n      latency_ms: latencyMs,\n      prompt_tokens: usage.promptTokens,\n      completion_tokens: usage.completionTokens,\n      total_tokens: usage.totalTokens,\n      estimated_cost_usd: estimateCost(usage, inRate, outRate),\n      output_preview: String(content).slice(0, 300),\n      raw_usage: result.usage || null\n    };\n  } catch (error) {\n    return {\n      provider,\n      skipped: false,\n      model,\n      error: error.message,\n      latency_ms: Date.now() - started,\n      prompt_tokens: 0,\n      completion_tokens: 0,\n      total_tokens: 0,\n      estimated_cost_usd: 0\n    };\n  }\n}\n\nconst local = await callProvider.call(this, 'local', localUrl, localModel, '', localInputUsdPer1k, localOutputUsdPer1k);\nconst cloud = await callProvider.call(this, 'cloud', cloudUrl, cloudModel, cloudApiKey, cloudInputUsdPer1k, cloudOutputUsdPer1k);\n\nconst speedRatio = local.latency_ms && cloud.latency_ms ? cloud.latency_ms / local.latency_ms : null;\nconst costRatio = local.estimated_cost_usd > 0 ? cloud.estimated_cost_usd / local.estimated_cost_usd : null;\n\nreturn [{\n  json: {\n    workflow: 'ai-provider-speed-cost-benchmark',\n    policy_name: policyName,\n    created_at: new Date().toISOString(),\n    prompt_chars: prompt.length,\n    max_tokens: maxTokens,\n    local,\n    cloud,\n    speed_ratio_cloud_over_local: speedRatio,\n    cost_ratio_cloud_over_local: costRatio,\n    winner_speed: speedRatio === null ? 'unknown' : speedRatio > 1 ? 'local' : 'cloud',\n    winner_cost: cloud.estimated_cost_usd === 0 && local.estimated_cost_usd === 0 ? 'unknown' : cloud.estimated_cost_usd > local.estimated_cost_usd ? 'local' : 'cloud'\n  }\n}];"
+      },
+      "id": "code-run-benchmark",
+      "name": "Code: Run Local vs Cloud Benchmark",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "created_at",
+              "type": "string",
+              "value": "={{$json.created_at}}"
+            },
+            {
+              "name": "policy_name",
+              "type": "string",
+              "value": "={{$json.policy_name}}"
+            },
+            {
+              "name": "prompt_chars",
+              "type": "number",
+              "value": "={{$json.prompt_chars}}"
+            },
+            {
+              "name": "local_model",
+              "type": "string",
+              "value": "={{$json.local.model}}"
+            },
+            {
+              "name": "local_latency_ms",
+              "type": "number",
+              "value": "={{$json.local.latency_ms}}"
+            },
+            {
+              "name": "local_total_tokens",
+              "type": "number",
+              "value": "={{$json.local.total_tokens}}"
+            },
+            {
+              "name": "local_cost_usd",
+              "type": "number",
+              "value": "={{$json.local.estimated_cost_usd}}"
+            },
+            {
+              "name": "cloud_model",
+              "type": "string",
+              "value": "={{$json.cloud.model}}"
+            },
+            {
+              "name": "cloud_latency_ms",
+              "type": "number",
+              "value": "={{$json.cloud.latency_ms}}"
+            },
+            {
+              "name": "cloud_total_tokens",
+              "type": "number",
+              "value": "={{$json.cloud.total_tokens}}"
+            },
+            {
+              "name": "cloud_cost_usd",
+              "type": "number",
+              "value": "={{$json.cloud.estimated_cost_usd}}"
+            },
+            {
+              "name": "speed_ratio_cloud_over_local",
+              "type": "number",
+              "value": "={{$json.speed_ratio_cloud_over_local}}"
+            },
+            {
+              "name": "cost_ratio_cloud_over_local",
+              "type": "number",
+              "value": "={{$json.cost_ratio_cloud_over_local}}"
+            },
+            {
+              "name": "winner_speed",
+              "type": "string",
+              "value": "={{$json.winner_speed}}"
+            },
+            {
+              "name": "winner_cost",
+              "type": "string",
+              "value": "={{$json.winner_cost}}"
+            },
+            {
+              "name": "raw_json",
+              "type": "string",
+              "value": "={{JSON.stringify($json)}}"
+            }
+          ]
+        }
+      },
+      "id": "set-benchmark-row",
+      "name": "Build Benchmark Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [760, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$env.REVIEW_SHEET_ID}}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AI Benchmarks"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        }
+      },
+      "id": "sheet-benchmark-results",
+      "name": "Google Sheets: Benchmark Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1020, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Set Benchmark Input", "type": "main", "index": 0 }]]
+    },
+    "Set Benchmark Input": {
+      "main": [[{ "node": "Code: Run Local vs Cloud Benchmark", "type": "main", "index": 0 }]]
+    },
+    "Code: Run Local vs Cloud Benchmark": {
+      "main": [[{ "node": "Build Benchmark Row", "type": "main", "index": 0 }]]
+    },
+    "Build Benchmark Row": {
+      "main": [[{ "node": "Google Sheets: Benchmark Results", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Taipei"
+  }
+}

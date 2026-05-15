@@ -33,6 +33,7 @@ TIMEZONE=Asia/Taipei
 
 | Workflow | Best for | Human review | AI cache value |
 | --- | --- | --- | --- |
+| `ai-provider-speed-cost-benchmark.json` | Compare local vs cloud speed/cost | No | Measurement |
 | `content-repurpose-review.json` | 一篇文章/逐字稿產生 FB/IG/Threads/Email | Yes | High |
 | `lead-intake-crm-followup.json` | 表單名單整理、分級、寄追蹤信 | Yes | Medium |
 | `customer-support-triage.json` | 客服信件分類、草稿回覆、升級提醒 | Yes | High |
@@ -78,3 +79,45 @@ save_prefix
 - 所有對外文案先進 Google Sheet review queue。
 - AI output 要求 JSON，方便 n8n 後續節點處理。
 
+## Benchmark Local vs Cloud
+
+先匯入：
+
+```text
+workflows/ai-provider-speed-cost-benchmark.json
+```
+
+詳細設定看：
+
+```text
+BENCHMARKING.md
+```
+
+這個 workflow 會用同一個 prompt 同時測：
+
+```text
+local:
+  LOCAL_AI_BASE_URL
+  LOCAL_AI_MODEL
+
+cloud:
+  CLOUD_AI_BASE_URL
+  CLOUD_AI_MODEL
+  CLOUD_AI_API_KEY
+```
+
+並把結果寫入：
+
+```text
+Google Sheet: AI Benchmarks
+```
+
+用它判斷：
+
+```text
+短任務誰快
+長 SOP 誰快
+每次任務雲端 token 成本是多少
+哪些任務值得 routing 到本地
+哪些任務值得 routing 到雲端
+```

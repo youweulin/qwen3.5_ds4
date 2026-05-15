@@ -3,6 +3,15 @@
   "updated": "2026-05-15",
   "templates": [
     {
+      "id": "ai-provider-speed-cost-benchmark",
+      "workflow": "workflows/ai-provider-speed-cost-benchmark.json",
+      "policy": null,
+      "priority": 0,
+      "for": ["solo-founder", "small-team", "ai-consultant"],
+      "value": "Compare local AI vs cloud AI on the same task for latency, token usage, and estimated cost.",
+      "cache_value": "measurement"
+    },
+    {
       "id": "content-repurpose-review",
       "workflow": "workflows/content-repurpose-review.json",
       "policy": "policies/content-repurpose-review.md",
