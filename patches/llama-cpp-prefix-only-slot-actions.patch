@@ -1,0 +1,231 @@
+diff --git a/tools/server/server-task.h b/tools/server/server-task.h
+--- a/tools/server/server-task.h
++++ b/tools/server/server-task.h
+@@
+     struct slot_action {
+         int id_slot;
+         std::string filename;
+         std::string filepath;
++        std::string payload_scope = "session";
++        bool enforce_payload_scope = false;
+     };
+@@
+ struct server_task_result_slot_save_load : server_task_result {
+     std::string filename;
++    std::string payload_scope;
++    std::string metadata_filename;
+     bool is_save; // true = save, false = load
++    bool has_metadata = false;
+ 
+     size_t n_tokens;
+     size_t n_bytes;
+diff --git a/tools/server/server-task.cpp b/tools/server/server-task.cpp
+--- a/tools/server/server-task.cpp
++++ b/tools/server/server-task.cpp
+@@
+ json server_task_result_slot_save_load::to_json() {
+     if (is_save) {
+-        return json {
++        json data = {
+             { "id_slot",   id_slot },
+             { "filename",  filename },
++            { "payload_scope", payload_scope },
+             { "n_saved",   n_tokens },
+             { "n_written", n_bytes },
+             { "timings", {
+                 { "save_ms", t_ms }
+             }},
+         };
++        if (has_metadata) {
++            data["metadata_filename"] = metadata_filename;
++        }
++        return data;
+     }
+ 
+-    return json {
++    json data = {
+         { "id_slot",    id_slot },
+         { "filename",   filename },
++        { "payload_scope", payload_scope },
+         { "n_restored", n_tokens },
+         { "n_read",     n_bytes },
+         { "timings", {
+             { "restore_ms", t_ms }
+         }},
+     };
++    if (has_metadata) {
++        data["metadata_filename"] = metadata_filename;
++    }
++    return data;
+ }
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@
+ #include <cstddef>
+ #include <cinttypes>
+ #include <exception>
++#include <ctime>
++#include <fstream>
+ #include <memory>
+ #include <filesystem>
+ #include <utility>
+@@
+ constexpr int HTTP_POLLING_SECONDS = 1;
+ 
++static bool slot_payload_scope_valid(const std::string & scope) {
++    return scope == "session" || scope == "prefix-only" || scope == "full-prompt";
++}
++
++static std::string slot_metadata_filepath(const std::string & filepath) {
++    return filepath + ".meta.json";
++}
++
++static std::string slot_metadata_filename(const std::string & filename) {
++    return filename + ".meta.json";
++}
++
++static bool slot_metadata_write(
++        const std::string & filepath,
++        const std::string & filename,
++        int id_slot,
++        const std::string & payload_scope,
++        size_t n_tokens,
++        size_t n_bytes,
++        double t_ms) {
++    json metadata = {
++        { "schema",         "llama.cpp-slot-artifact-metadata-v1" },
++        { "filename",       filename },
++        { "payload_scope",  payload_scope },
++        { "id_slot",        id_slot },
++        { "n_tokens",       n_tokens },
++        { "n_bytes",        n_bytes },
++        { "created_unix",   (int64_t) std::time(nullptr) },
++        { "timings", {
++            { "save_ms", t_ms },
++        }},
++    };
++
++    std::ofstream out(slot_metadata_filepath(filepath), std::ios::out | std::ios::trunc);
++    if (!out.good()) {
++        return false;
++    }
++    out << metadata.dump(2) << '\n';
++    return out.good();
++}
++
++static bool slot_metadata_read(const std::string & filepath, json & metadata) {
++    std::ifstream in(slot_metadata_filepath(filepath));
++    if (!in.good()) {
++        return false;
++    }
++    metadata = json::parse(in, nullptr, false);
++    return !metadata.is_discarded();
++}
++
+ // state diagram: https://github.com/ggml-org/llama.cpp/pull/9283
+ enum slot_state {
+@@
+                     std::string filename = task.slot_action.filename;
+                     std::string filepath = task.slot_action.filepath;
++                    std::string payload_scope = task.slot_action.payload_scope;
+ 
+                     const llama_tokens & tokens = slot->prompt.tokens.get_tokens();
+                     const size_t nwrite = llama_state_seq_save_file(ctx_tgt, filepath.c_str(), slot->id, tokens.data(), token_count);
+ 
+                     const int64_t t_end = ggml_time_us();
+                     const double t_save_ms = (t_end - t_start) / 1000.0;
++                    const bool has_metadata = slot_metadata_write(filepath, filename, id_slot, payload_scope, token_count, nwrite, t_save_ms);
+ 
+                     auto res = std::make_unique<server_task_result_slot_save_load>();
+                     res->id       = task.id;
+                     res->id_slot  = id_slot;
+                     res->filename = filename;
++                    res->payload_scope = payload_scope;
++                    res->metadata_filename = slot_metadata_filename(filename);
++                    res->has_metadata = has_metadata;
+                     res->is_save  = true;
+                     res->n_tokens = token_count;
+                     res->n_bytes  = nwrite;
+@@
+                     std::string filename = task.slot_action.filename;
+                     std::string filepath = task.slot_action.filepath;
++                    std::string payload_scope = task.slot_action.payload_scope;
++
++                    json slot_metadata;
++                    const bool has_metadata = slot_metadata_read(filepath, slot_metadata);
++                    if (has_metadata) {
++                        const std::string stored_scope = slot_metadata.value("payload_scope", payload_scope);
++                        if (!slot_payload_scope_valid(stored_scope)) {
++                            send_error(task, "Invalid slot metadata payload_scope", ERROR_TYPE_INVALID_REQUEST);
++                            break;
++                        }
++                        payload_scope = stored_scope;
++                    }
++                    if (task.slot_action.enforce_payload_scope && payload_scope != task.slot_action.payload_scope) {
++                        send_error(task, "Slot metadata payload_scope does not match requested restore scope", ERROR_TYPE_INVALID_REQUEST);
++                        break;
++                    }
+ 
+                     llama_tokens tokens;
+                     tokens.resize(slot->n_ctx);
+@@
+                     res->id       = task.id;
+                     res->id_slot  = id_slot;
+                     res->filename = filename;
++                    res->payload_scope = payload_scope;
++                    res->metadata_filename = slot_metadata_filename(filename);
++                    res->has_metadata = has_metadata;
+                     res->is_save  = false;
+                     res->n_tokens = token_count;
+@@
+-        if (action == "save") {
++        if (action == "save" || action == "save_prefix") {
+             return handle_slots_save(req, id_slot);
+         }
+-        if (action == "restore") {
++        if (action == "restore" || action == "restore_prefix") {
+             return handle_slots_restore(req, id_slot);
+         }
+@@
+     if (!fs_validate_filename(filename)) {
+         res->error(format_error_response("Invalid filename", ERROR_TYPE_INVALID_REQUEST));
+         return res;
+     }
++    std::string payload_scope = req.get_param("action") == "save_prefix"
++        ? "prefix-only"
++        : request_data.value("payload_scope", "session");
++    if (!slot_payload_scope_valid(payload_scope)) {
++        res->error(format_error_response("Invalid payload_scope", ERROR_TYPE_INVALID_REQUEST));
++        return res;
++    }
+     std::string filepath = params.slot_save_path + filename;
+@@
+         task.slot_action.id_slot  = id_slot;
+         task.slot_action.filename = filename;
+         task.slot_action.filepath = filepath;
++        task.slot_action.payload_scope = payload_scope;
+         rd.post_task(std::move(task));
+     }
+@@
+     if (!fs_validate_filename(filename)) {
+         res->error(format_error_response("Invalid filename", ERROR_TYPE_INVALID_REQUEST));
+         return res;
+     }
++    const bool has_requested_scope = request_data.contains("payload_scope") && request_data.at("payload_scope").is_string();
++    std::string payload_scope = req.get_param("action") == "restore_prefix"
++        ? "prefix-only"
++        : (has_requested_scope ? request_data.at("payload_scope").get<std::string>() : "session");
++    if (!slot_payload_scope_valid(payload_scope)) {
++        res->error(format_error_response("Invalid payload_scope", ERROR_TYPE_INVALID_REQUEST));
++        return res;
++    }
+     std::string filepath = params.slot_save_path + filename;
+@@
+         task.slot_action.id_slot  = id_slot;
+         task.slot_action.filename = filename;
+         task.slot_action.filepath = filepath;
++        task.slot_action.payload_scope = payload_scope;
++        task.slot_action.enforce_payload_scope = req.get_param("action") == "restore_prefix" || has_requested_scope;
+         rd.post_task(std::move(task));
+     }

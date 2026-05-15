@@ -1,0 +1,107 @@
+{
+  "schema": "qwen3.5-ds4-cpp-prefix-only-slot-api-trace-v1",
+  "date": "2026-05-15",
+  "runtime": {
+    "server": "llama-server",
+    "source_tree": "/Users/kevinlin911/DS4/deps/llama.cpp",
+    "build": "/Users/kevinlin911/DS4/build/llama-qwen35-metal/bin/llama-server",
+    "base_url": "http://127.0.0.1:18180",
+    "model_alias": "qwen3.5:4b",
+    "ctx_size": 32768,
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/cpp-prefix-slots/"
+  },
+  "changes": {
+    "new_slot_actions": [
+      "POST /slots/:id_slot?action=save_prefix",
+      "POST /slots/:id_slot?action=restore_prefix"
+    ],
+    "compatible_slot_actions": [
+      "POST /slots/:id_slot?action=save with optional payload_scope",
+      "POST /slots/:id_slot?action=restore with optional payload_scope"
+    ],
+    "metadata_sidecar": "<filename>.meta.json",
+    "metadata_schema": "llama.cpp-slot-artifact-metadata-v1",
+    "payload_scopes": [
+      "session",
+      "prefix-only",
+      "full-prompt"
+    ]
+  },
+  "prefix_prefill": {
+    "endpoint": "/completion",
+    "id_slot": 0,
+    "n_predict": 0,
+    "tokens_evaluated": 36,
+    "tokens_cached": 36,
+    "prompt_n": 36,
+    "prompt_ms": 228.518
+  },
+  "save_prefix": {
+    "endpoint": "/slots/0?action=save_prefix",
+    "filename": "cpp-prefix-test.bin",
+    "payload_scope": "prefix-only",
+    "n_saved": 36,
+    "n_written": 53872272,
+    "save_ms": 49.472,
+    "metadata_filename": "cpp-prefix-test.bin.meta.json"
+  },
+  "metadata": {
+    "schema": "llama.cpp-slot-artifact-metadata-v1",
+    "filename": "cpp-prefix-test.bin",
+    "payload_scope": "prefix-only",
+    "id_slot": 0,
+    "n_tokens": 36,
+    "n_bytes": 53872272,
+    "created_unix": 1778818044,
+    "timings": {
+      "save_ms": 49.472
+    }
+  },
+  "erase": {
+    "endpoint": "/slots/0?action=erase",
+    "id_slot": 0,
+    "n_erased": 36
+  },
+  "restore_prefix": {
+    "endpoint": "/slots/0?action=restore_prefix",
+    "filename": "cpp-prefix-test.bin",
+    "payload_scope": "prefix-only",
+    "n_restored": 36,
+    "n_read": 53872272,
+    "restore_ms": 18.575,
+    "metadata_filename": "cpp-prefix-test.bin.meta.json"
+  },
+  "scope_mismatch_guard": {
+    "saved_filename": "cpp-session-test.bin",
+    "saved_payload_scope": "session",
+    "restore_action": "restore_prefix",
+    "expected_result": "reject",
+    "actual_error": {
+      "code": 400,
+      "type": "invalid_request_error",
+      "message": "Slot metadata payload_scope does not match requested restore scope"
+    }
+  },
+  "tail_after_restore": {
+    "endpoint": "/completion",
+    "id_slot": 0,
+    "tokens_cached": 46,
+    "prompt_n": 15,
+    "prompt_ms": 200.286,
+    "predicted_n": 32,
+    "predicted_ms": 1018.053
+  },
+  "result": {
+    "build_ok": true,
+    "save_prefix_ok": true,
+    "metadata_sidecar_ok": true,
+    "restore_prefix_ok": true,
+    "scope_mismatch_guard_ok": true,
+    "tail_after_restore_ok": true
+  },
+  "limits": [
+    "This still serializes llama.cpp whole slot bytes for the saved prefix state.",
+    "It does not reduce the preallocated active KV buffer.",
+    "It does not yet implement prefix block paging or block-level KV eviction."
+  ]
+}

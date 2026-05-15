@@ -1027,6 +1027,162 @@ prefix-only 不會降低 active KV buffer 的預配置大小，但它讓可重�
 才能知道哪些 block 是固定 SOP，哪些 block 是動態 tail
 ```
 
+## C++ Phase 1: Native Prefix-only Slot Artifact
+
+這一步開始碰 llama.cpp C++，目標是把前面 manager 層的 prefix-only artifact 概念原生化到 server slot API。
+
+修改位置：
+
+```text
+/Users/kevinlin911/DS4/deps/llama.cpp/tools/server/server-context.cpp
+/Users/kevinlin911/DS4/deps/llama.cpp/tools/server/server-task.h
+/Users/kevinlin911/DS4/deps/llama.cpp/tools/server/server-task.cpp
+```
+
+新增 API：
+
+```text
+POST /slots/:id_slot?action=save_prefix
+POST /slots/:id_slot?action=restore_prefix
+```
+
+並保留原本 API 的相容性：
+
+```text
+POST /slots/:id_slot?action=save
+POST /slots/:id_slot?action=restore
+```
+
+`save` / `restore` 現在可接受：
+
+```json
+{
+  "filename": "example.bin",
+  "payload_scope": "session"
+}
+```
+
+支援的 `payload_scope`：
+
+```text
+session
+prefix-only
+full-prompt
+```
+
+`save_prefix` 會自動把 scope 標成：
+
+```text
+prefix-only
+```
+
+並在 raw slot 檔旁邊寫出 sidecar metadata：
+
+```text
+<filename>.meta.json
+```
+
+metadata schema：
+
+```json
+{
+  "schema": "llama.cpp-slot-artifact-metadata-v1",
+  "filename": "cpp-prefix-test.bin",
+  "payload_scope": "prefix-only",
+  "id_slot": 0,
+  "n_tokens": 36,
+  "n_bytes": 53872272,
+  "created_unix": 1778818044,
+  "timings": {
+    "save_ms": 49.472
+  }
+}
+```
+
+`restore_prefix` 會讀取 sidecar metadata，並拒絕還原非 `prefix-only` artifact。
+這可以避免把 session / full prompt 的 checkpoint 誤當成乾淨 prefix cache。
+
+### C++ Phase 1 Test Result
+
+本次重新 build：
+
+```text
+/Users/kevinlin911/DS4/build/llama-qwen35-metal/bin/llama-server
+```
+
+啟動 Qwen3.5 4B server 後實測：
+
+```text
+prefix prefill:
+  prompt_n:    36
+  prompt_ms:   228.518
+
+save_prefix:
+  n_saved:     36
+  n_written:   53,872,272 bytes
+  save_ms:     49.472
+  scope:       prefix-only
+  metadata:    cpp-prefix-test.bin.meta.json
+
+erase:
+  n_erased:    36
+
+restore_prefix:
+  n_restored:  36
+  n_read:      53,872,272 bytes
+  restore_ms:  18.575
+  scope:       prefix-only
+```
+
+錯誤驗證：
+
+```text
+session artifact -> restore_prefix
+result: rejected
+error:  Slot metadata payload_scope does not match requested restore scope
+```
+
+restore 後再接 tail completion 也可正常繼續：
+
+```text
+tail_after_restore:
+  prompt_n:      15
+  tokens_cached: 46
+  predicted_n:   32
+```
+
+完整 trace：
+
+```text
+traces/cpp-prefix-only-slot-api-2026-05-15.json
+```
+
+這代表 Phase C++ 1 已經完成：
+
+```text
+prefix-only 不再只是外部腳本約定
+server API 已經知道 artifact scope
+slot save/restore response 會回報 payload_scope
+metadata sidecar 可以被 restore 驗證
+錯誤 scope 會被擋下來
+```
+
+目前仍然不是：
+
+```text
+active KV RAM 節省
+block-level KV paging
+prefix block eviction
+```
+
+它解決的是「artifact 語義安全」：
+
+```text
+哪些 slot bytes 是乾淨 prefix
+哪些只是 session checkpoint
+restore 時不能混用
+```
+
 ## Block Boundary Lab
 
 prefix-only 之後，下一步是先把 prefix artifact 拆成「可管理的 block 索引」，但還不碰 C++ runtime。
@@ -1405,10 +1561,10 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 
 ## 下一步
 
-1. 測試 12k / 24k / 48k token prefix 的命中曲線。
-2. 用更長文章測試翻譯吞吐量，例如 20 / 50 / 100 段。
-3. 測試 server restart 後是否能用 slot save path 或外部 state 做恢復。
-4. 把 metadata cache key 接到實際 KV 檔案命名與 header 驗證。
+1. C++ Phase 2：把 `prefix-only` sidecar 擴成 native manifest，加入 model/tokenizer/RoPE/quant/hash 驗證。
+2. C++ Phase 3：探索 prefix block index，先做可列出/可驗證/可淘汰 block，不急著 paging。
+3. 測試 12k / 24k / 48k token prefix 的命中曲線。
+4. 用更長文章測試翻譯吞吐量，例如 20 / 50 / 100 段。
 5. 比較 Qwen3.5 4B、Qwen3.6 27B MTP、Gemma 3 4B MTP、DS4 Flash。
 6. 把這套接進實際 workflow，例如：
    - `japan-trend-fb-publisher`
