@@ -1,0 +1,152 @@
+{
+  "base_metadata": {
+    "cache_scope": "prefix",
+    "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+    "context_size": 32768,
+    "kv_cache_format_version": "llama.cpp-qwen35-hybrid-kv-v1",
+    "lora_sha256": "none",
+    "model_id": "qwen3.5:4b",
+    "model_sha256": "local-model-sha256-not-provided",
+    "policy_sha256": "none",
+    "prompt_full_sha256": "not-applicable-for-prefix-scope",
+    "prompt_prefix_sha256": "3c08c8047cb460ad4aaf31e526911da69f3cff876706298d2fee42d66c9b3b8f",
+    "quant_type": "Q4_K_M",
+    "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+    "runtime_name": "llama.cpp",
+    "runtime_version": "llama.cpp-local-build",
+    "schema_version": "1",
+    "steering_state": "none",
+    "steering_strength": "0",
+    "steering_vector_sha256": "none",
+    "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+  },
+  "base_prefix_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+  "base_request_key": "00cd3515ef4b4ea2e8a0bcef7a2d145162c04b5e28a69d77c9b4905e860be867",
+  "results": [
+    {
+      "actual_key_changed": false,
+      "expected_key_changed": false,
+      "name": "identical_prefix_same_state",
+      "note": "Same model/runtime/prefix/steering must reuse the same prefix key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": false,
+      "expected_key_changed": false,
+      "name": "same_prefix_new_tail_prefix_key",
+      "note": "A different user tail should not invalidate the reusable prefix key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "same_prefix_new_tail_request_key",
+      "note": "A full request key must include the user tail.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "mutated_prefix_text",
+      "note": "Changing the middle of the prefix must invalidate the prefix key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "model_sha256",
+      "note": "Changing model_sha256 must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "tokenizer_sha256",
+      "note": "Changing tokenizer_sha256 must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "quant_type",
+      "note": "Changing quant_type must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "runtime_version",
+      "note": "Changing runtime_version must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "chat_template",
+      "note": "Changing chat_template must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "rope_settings",
+      "note": "Changing rope_settings must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "context_size",
+      "note": "Changing context_size must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "kv_cache_format_version",
+      "note": "Changing kv_cache_format_version must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "lora_sha256",
+      "note": "Changing lora_sha256 must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "policy_sha256",
+      "note": "Changing policy_sha256 must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "hidden_steering_state",
+      "note": "Changing hidden_steering_state must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "steering_vector_sha256",
+      "note": "Changing steering_vector_sha256 must produce a different cache key.",
+      "pass": true
+    },
+    {
+      "actual_key_changed": true,
+      "expected_key_changed": true,
+      "name": "steering_strength",
+      "note": "Changing steering_strength must produce a different cache key.",
+      "pass": true
+    }
+  ],
+  "schema": "qwen3.5-ds4-cache-key-v1",
+  "summary": {
+    "failed": 0,
+    "passed": 17,
+    "total": 17
+  }
+}

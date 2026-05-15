@@ -190,6 +190,93 @@ KV cache format version
 runtime version
 ```
 
+## Cache Metadata / Hash Lab
+
+在真正做 SSD KV persistence 之前，必須先確認一件事：
+
+> 任何會改變 KV cache 語義的狀態，都必須讓 cache key 改變。
+
+所以 repo 另外加入了：
+
+```text
+scripts/qwen_cache_key_lab.py
+```
+
+這個測試不需要啟動模型 server，它只測 metadata/hash 設計是否安全。
+
+重跑：
+
+```sh
+python3 scripts/qwen_cache_key_lab.py \
+  --trace-json traces/cache-key-lab-2026-05-15.json
+```
+
+如果你要把本機 GGUF 也納入實際 hash：
+
+```sh
+python3 scripts/qwen_cache_key_lab.py \
+  --model-path /path/to/model.gguf \
+  --tokenizer-sha256 <tokenizer_sha256> \
+  --runtime-version <llama.cpp_commit_or_build_id> \
+  --trace-json traces/cache-key-lab-real-model.json
+```
+
+### Key Scope
+
+這裡刻意分成兩種 key：
+
+```text
+prefix_key   = 用來重用固定 prefix 的 KV cache
+request_key  = 用來辨識整次完整請求
+```
+
+這個差別很重要：
+
+```text
+同一個固定 SOP + 不同 user tail
+```
+
+應該是：
+
+```text
+prefix_key 不變
+request_key 改變
+```
+
+也就是說，換問題不該毀掉可重用的固定 prefix cache；但完整請求本身當然要是不同 key。
+
+### Metadata Hash Result
+
+本次結果：
+
+```text
+identical_prefix_same_state: PASS
+same_prefix_new_tail_prefix_key: PASS
+same_prefix_new_tail_request_key: PASS
+mutated_prefix_text: PASS
+model_sha256: PASS
+tokenizer_sha256: PASS
+quant_type: PASS
+runtime_version: PASS
+chat_template: PASS
+rope_settings: PASS
+context_size: PASS
+kv_cache_format_version: PASS
+lora_sha256: PASS
+policy_sha256: PASS
+hidden_steering_state: PASS
+steering_vector_sha256: PASS
+steering_strength: PASS
+```
+
+完整 trace：
+
+```text
+traces/cache-key-lab-2026-05-15.json
+```
+
+這次測試也抓到一個設計細節：第一版 `prefix_key` 不小心把 full prompt hash 放進 key，導致「同 prefix 換 user tail」會錯誤 miss。修正後，prefix scope 不再納入 `prompt_full_sha256`，只有 request scope 會納入。
+
 ## 目前限制
 
 這次實驗證明的是：
@@ -242,7 +329,7 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 
 1. 測試 12k / 24k / 48k token prefix 的命中曲線。
 2. 測試 server restart 後是否能用 slot save path 或外部 state 做恢復。
-3. 實作真正的 metadata cache key。
+3. 把 metadata cache key 接到實際 KV 檔案命名與 header 驗證。
 4. 比較 Qwen3.5 4B、Qwen3.6 27B MTP、Gemma 3 4B MTP、DS4 Flash。
 5. 把這套接進實際 workflow，例如：
    - `japan-trend-fb-publisher`
