@@ -1,0 +1,77 @@
+{
+  "base_url": "http://127.0.0.1:18180",
+  "baseline_no_manager_cold_followup": {
+    "completion_preview": "{\"recommendation\":\"設定 n8n 自動化接 AI 的成本邊界",
+    "latency_s": 11.120692415999656,
+    "prefix_cache_key": "1357a7cf944dcd73c076ea15fd6cfe23fdb9253292d38fb1bb09cebb1b671507",
+    "prompt_n": 3847
+  },
+  "manager_hit_restore_then_followup": {
+    "artifact_path": "artifacts/proxy-cache-artifacts/prefix-3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290.qkv",
+    "cache_hit": true,
+    "cache_key": "3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290",
+    "cache_saved": false,
+    "completion_latency_s": 2.071881083000335,
+    "completion_preview": "{\"recommendation\":\"設定 n8n 自動化接 AI 的成本邊界",
+    "prompt_n": 518,
+    "restore_latency_s": 0.022768333001295105,
+    "restore_response": {
+      "filename": "proxy-restore-3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290.bin",
+      "id_slot": 0,
+      "n_read": 179268880,
+      "n_restored": 3860,
+      "timings": {
+        "restore_ms": 21.977
+      }
+    },
+    "save_latency_s": 0.0,
+    "save_response": null,
+    "slot_payload_sha256": null,
+    "slot_payload_size": null,
+    "total_latency_s": 2.09464941600163
+  },
+  "manager_miss_then_save": {
+    "artifact_path": "artifacts/proxy-cache-artifacts/prefix-3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290.qkv",
+    "cache_hit": false,
+    "cache_key": "3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290",
+    "cache_saved": true,
+    "completion_latency_s": 11.031406583002536,
+    "completion_preview": "{\"recommendation\":\"先查證日本熱門話題的來源是否可靠，避免",
+    "prompt_n": 3845,
+    "restore_latency_s": 0.0,
+    "restore_response": null,
+    "save_latency_s": 0.17182550000143237,
+    "save_response": {
+      "filename": "proxy-save-3a03c827f724b2dbc3cf2f3785fc57478ab64d4921d8e01d6a0e7dcb0c496290.bin",
+      "id_slot": 0,
+      "n_saved": 3860,
+      "n_written": 179268880,
+      "timings": {
+        "save_ms": 169.825
+      }
+    },
+    "slot_payload_sha256": "a23fc004827f6864dc5e5cfe1eec1a5e27abf2a1c8ea9616026d04c56b79831b",
+    "slot_payload_size": 179268880,
+    "total_latency_s": 11.203232083003968
+  },
+  "policy": {
+    "artifact_dir": "artifacts/proxy-cache-artifacts",
+    "cache_scope": "prefix",
+    "n_predict": 16,
+    "prefix_chars": 6000,
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/proxy-cache-slots/"
+  },
+  "schema": "qwen3.5-ds4-cache-manager-proxy-lab-v1",
+  "slot_id": 0,
+  "summary": {
+    "baseline_latency_s": 11.120692415999656,
+    "baseline_prompt_n": 3847,
+    "latency_speedup_vs_cold": 5.309094844724604,
+    "manager_hit_completion_latency_s": 2.071881083000335,
+    "manager_hit_prompt_n": 518,
+    "manager_hit_restore_latency_s": 0.022768333001295105,
+    "manager_hit_total_latency_s": 2.09464941600163,
+    "ok": true,
+    "prompt_n_saved": 3329
+  }
+}

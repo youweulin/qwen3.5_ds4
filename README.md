@@ -466,6 +466,89 @@ restore 後同 prefix 換問題，prompt_n 從 3820 降到 518，代表 cache �
 而且 payload 抽出後能被 llama.cpp restore 使用。
 ```
 
+## External Cache Manager Proxy Lab
+
+在改 llama.cpp C++ 之前，先測「A 路線」：
+
+```text
+Client / Agent
+  -> Python cache manager
+  -> llama.cpp /completion + /slots save/restore
+```
+
+新增腳本：
+
+```text
+scripts/qwen_cache_manager_proxy_lab.py
+```
+
+這個腳本不是正式 HTTP proxy，而是把 proxy policy 做成可量測的 lab：
+
+```text
+1. baseline：不用 cache manager，長 prefix 直接冷跑
+2. manager miss：prefix key 不存在，正常 completion，跑完 save slot 並包成 .qkv
+3. erase active slot，模擬切換任務或 session
+4. manager hit：prefix key 已存在，從 .qkv 抽出 payload，restore slot，再跑 follow-up
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_cache_manager_proxy_lab.py \
+  --base-url http://127.0.0.1:18180 \
+  --slot-save-path "$PWD/artifacts/proxy-cache-slots/" \
+  --artifact-dir artifacts/proxy-cache-artifacts \
+  --trace-json traces/cache-manager-proxy-lab-2026-05-15.json \
+  --clean
+```
+
+### Proxy Lab Result
+
+本次 M1 Pro + Qwen3.5 4B 實測：
+
+```text
+baseline no-manager cold follow-up:
+  latency:   11.121s
+  prompt_n: 3847
+
+manager miss then save:
+  completion latency: 11.031s
+  save latency:        0.172s
+  total latency:      11.203s
+  prompt_n:           3845
+  slot payload:        179,268,880 bytes
+
+manager hit then restore:
+  restore latency:     0.023s
+  completion latency:  2.072s
+  total latency:       2.095s
+  prompt_n:            518
+
+speedup vs cold:       5.31x
+prompt tokens saved:   3329
+```
+
+完整 trace：
+
+```text
+traces/cache-manager-proxy-lab-2026-05-15.json
+```
+
+判讀：
+
+```text
+A 路線的外部 manager 在長 prefix 場景是值得的。
+Python 代理層與 metadata/hash/header 驗證不是主要瓶頸。
+真正成本是第一次 prefill 與 save；命中後 restore 只有約 23ms。
+```
+
+也就是說：
+
+```text
+短 prompt 不應該進 SSD cache manager。
+長 SOP / skill / glossary / 100k context 才值得。
+```
+
 ### KV Artifact Performance
 
 為了確認這層外殼本身不會變成瓶頸，另外加入：
