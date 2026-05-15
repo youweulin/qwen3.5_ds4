@@ -653,6 +653,108 @@ traces/workflow-policy-bench-2026-05-15.json
 速度/cache 用 4B 建 baseline；品質用大模型判斷是否能產品化。
 ```
 
+## Memory Policy Bench
+
+為了精準回答「到底省多少 RAM」，新增：
+
+```text
+scripts/qwen_memory_policy_bench.py
+```
+
+測試流程：
+
+```text
+1. 腳本啟動 llama-server
+2. 記錄 baseline RSS / llama.cpp Metal memory breakdown
+3. 跑 workflow A
+4. save workflow A slot 成 .qkv artifact
+5. erase active slot
+6. 跑 workflow B，模擬切換工作流
+7. restore workflow A
+8. 跑 workflow A follow-up，確認 cache hit
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_memory_policy_bench.py \
+  --slot-save-path "$PWD/artifacts/memory-policy-slots/" \
+  --artifact-dir artifacts/memory-policy-artifacts \
+  --trace-json traces/memory-policy-bench-2026-05-15.json
+```
+
+### Memory Result
+
+本次 M1 Pro + Qwen3.5 4B + `ctx-size 32768` 實測。
+
+llama.cpp 啟動時的靜態 memory breakdown：
+
+```text
+metal_model_mib:       2584.74 MiB
+metal_kv_mib:          1024.00 MiB
+metal_recurrent_mib:     50.25 MiB
+metal_compute_mib:      490.00 MiB
+metal_static_total:    4148.99 MiB
+
+cpu_model_mib:          497.31 MiB
+cpu_compute_mib:         74.02 MiB
+```
+
+RSS samples:
+
+```text
+server_ready_baseline:          3912.86 MiB
+after_workflow_a_completion:    3842.47 MiB
+after_workflow_a_save_artifact: 3739.38 MiB
+after_erase_workflow_a_slot:    3739.78 MiB
+after_workflow_b_completion:    3840.89 MiB
+after_restore_workflow_a_slot:  3842.94 MiB
+after_workflow_a_followup_hit:  3846.50 MiB
+```
+
+Workflow A artifact:
+
+```text
+artifact_size: 149.23 MiB
+save:          3165 tokens, 156,478,440 bytes, 266.726ms
+restore:       3165 tokens, 156,478,440 bytes, 19.372ms
+follow-up:     prompt_n 503, latency 1.991s
+```
+
+完整 trace：
+
+```text
+traces/memory-policy-bench-2026-05-15.json
+```
+
+判讀：
+
+```text
+erase/save 不會讓 RSS 大幅歸零，因為 llama.cpp 會預配置 active ctx/KV buffer。
+這次 32768 ctx 的 Metal KV buffer 本身就是 1024 MiB。
+```
+
+所以這套目前省的不是：
+
+```text
+單一 active workflow 的 llama.cpp KV buffer
+```
+
+而是：
+
+```text
+不用讓多個 workflow / skill 的已算狀態同時 active 常駐。
+不用切回 workflow A 時重新 prefill。
+```
+
+換句話說：
+
+```text
+active RAM/VRAM 仍要保留目前正在工作的 context。
+冷掉的 workflow state 可以放 SSD artifact。
+切回來用 19ms restore，避免 9s prefill。
+```
+
 ### KV Artifact Performance
 
 為了確認這層外殼本身不會變成瓶頸，另外加入：

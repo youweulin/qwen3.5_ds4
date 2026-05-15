@@ -1,0 +1,193 @@
+{
+  "base_url": "http://127.0.0.1:18182",
+  "memory_samples": [
+    {
+      "artifact_bytes": null,
+      "artifact_mib": null,
+      "artifact_path": null,
+      "label": "server_ready_baseline",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 0.0,
+        "llamacpp:prompt_seconds_total": 0.0,
+        "llamacpp:prompt_tokens_seconds": 0.0,
+        "llamacpp:prompt_tokens_total": 0.0
+      },
+      "rss_bytes": 4102930432,
+      "rss_mib": 3912.859375,
+      "time_unix": 1778814276.855375
+    },
+    {
+      "artifact_bytes": null,
+      "artifact_mib": null,
+      "artifact_path": null,
+      "label": "after_workflow_a_completion",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 8.552,
+        "llamacpp:prompt_tokens_seconds": 368.335,
+        "llamacpp:prompt_tokens_total": 3150.0
+      },
+      "rss_bytes": 4029120512,
+      "rss_mib": 3842.46875,
+      "time_unix": 1778814285.965482
+    },
+    {
+      "artifact_bytes": 156479685,
+      "artifact_mib": 149.23065662384033,
+      "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+      "label": "after_workflow_a_save_artifact",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 8.552,
+        "llamacpp:prompt_tokens_seconds": 368.335,
+        "llamacpp:prompt_tokens_total": 3150.0
+      },
+      "rss_bytes": 3921018880,
+      "rss_mib": 3739.375,
+      "time_unix": 1778814286.748577
+    },
+    {
+      "artifact_bytes": 156479685,
+      "artifact_mib": 149.23065662384033,
+      "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+      "label": "after_erase_workflow_a_slot",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 8.552,
+        "llamacpp:prompt_tokens_seconds": 368.335,
+        "llamacpp:prompt_tokens_total": 3150.0
+      },
+      "rss_bytes": 3921444864,
+      "rss_mib": 3739.78125,
+      "time_unix": 1778814286.754369
+    },
+    {
+      "artifact_bytes": 156479685,
+      "artifact_mib": 149.23065662384033,
+      "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+      "label": "after_workflow_b_completion",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 17.113,
+        "llamacpp:prompt_tokens_seconds": 368.375,
+        "llamacpp:prompt_tokens_total": 6304.0
+      },
+      "rss_bytes": 4027465728,
+      "rss_mib": 3840.890625,
+      "time_unix": 1778814295.832729
+    },
+    {
+      "artifact_bytes": 156479685,
+      "artifact_mib": 149.23065662384033,
+      "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+      "label": "after_restore_workflow_a_slot",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 17.113,
+        "llamacpp:prompt_tokens_seconds": 368.375,
+        "llamacpp:prompt_tokens_total": 6304.0
+      },
+      "rss_bytes": 4029612032,
+      "rss_mib": 3842.9375,
+      "time_unix": 1778814296.249429
+    },
+    {
+      "artifact_bytes": 156479685,
+      "artifact_mib": 149.23065662384033,
+      "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+      "label": "after_workflow_a_followup_hit",
+      "metrics": {
+        "llamacpp:n_busy_slots_per_decode": 1.0,
+        "llamacpp:prompt_seconds_total": 18.596,
+        "llamacpp:prompt_tokens_seconds": 366.046,
+        "llamacpp:prompt_tokens_total": 6807.0
+      },
+      "rss_bytes": 4033347584,
+      "rss_mib": 3846.5,
+      "time_unix": 1778814298.245255
+    }
+  ],
+  "policy": {
+    "artifact_dir": "artifacts/memory-policy-artifacts",
+    "context_size": 32768,
+    "n_predict": 16,
+    "prefix_chars": 6000,
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/memory-policy-slots/",
+    "workflow_a": "fb",
+    "workflow_b": "translation"
+  },
+  "schema": "qwen3.5-ds4-memory-policy-bench-v1",
+  "server_pid": 76616,
+  "static_memory_from_llama_log": {
+    "cpu_compute_mib": 74.02,
+    "cpu_model_mib": 497.31,
+    "metal_compute_mib": 490.0,
+    "metal_kv_mib": 1024.0,
+    "metal_model_mib": 2584.74,
+    "metal_recurrent_mib": 50.25,
+    "metal_static_total_mib": 4148.99
+  },
+  "summary": {
+    "after_erase_rss_mib": 3739.78125,
+    "after_restore_rss_mib": 3842.9375,
+    "baseline_rss_mib": 3912.859375,
+    "interpretation": "llama.cpp preallocates the active ctx/KV buffers, so erase/save does not make RSS collapse. The artifact moves reusable workflow state to SSD and avoids keeping multiple workflow states active at once.",
+    "rss_delta_max_mib": 173.484375,
+    "rss_max_mib": 3912.859375,
+    "rss_min_mib": 3739.375,
+    "workflow_a_artifact_mib": 149.23065662384033
+  },
+  "workflow_a": "fb",
+  "workflow_a_cache_key": "87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40",
+  "workflow_a_completion": {
+    "latency_s": 9.10112145900348,
+    "prompt_n": 3150
+  },
+  "workflow_a_erase": {
+    "latency_s": 0.0009567909946781583,
+    "response": {
+      "id_slot": 0,
+      "n_erased": 3165
+    }
+  },
+  "workflow_a_followup_after_restore": {
+    "latency_s": 1.9911370419940795,
+    "prompt_n": 503
+  },
+  "workflow_a_restore": {
+    "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+    "cache_key": "87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40",
+    "latency_s": 0.020340916998975445,
+    "response": {
+      "filename": "memory-restore-a-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.bin",
+      "id_slot": 0,
+      "n_read": 156478440,
+      "n_restored": 3165,
+      "timings": {
+        "restore_ms": 19.372
+      }
+    },
+    "restored_slot_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/memory-policy-slots/memory-restore-a-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.bin"
+  },
+  "workflow_a_save": {
+    "artifact_path": "artifacts/memory-policy-artifacts/prefix-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.qkv",
+    "latency_s": 0.26750387500214856,
+    "raw_slot_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/memory-policy-slots/memory-save-a-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.bin",
+    "raw_slot_sha256": "9d608c80837ede8b2715effa049a57ffa900be09a6c54fe836d2a7767c9aaef3",
+    "raw_slot_size": 156478440,
+    "response": {
+      "filename": "memory-save-a-87e9593f1bf3cbe3b538054eb0f7adb12c36c57697976f15d4b187e7b8928e40.bin",
+      "id_slot": 0,
+      "n_saved": 3165,
+      "n_written": 156478440,
+      "timings": {
+        "save_ms": 266.726
+      }
+    }
+  },
+  "workflow_b": "translation",
+  "workflow_b_completion": {
+    "latency_s": 9.071390915996744,
+    "prompt_n": 3154
+  }
+}
