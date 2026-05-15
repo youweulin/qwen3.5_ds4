@@ -4,12 +4,12 @@
 
 > Qwen3.5 本地模型能不能像 DS4 的想法一樣，把固定長上下文算過的狀態重複利用，讓 Agent / RAG / SOP worker 變快？
 
-目前結論：**可以吃到很明顯的固定 prefix prompt cache / checkpoint 效果**。  
+目前結論：**可以吃到很明顯的固定 prefix prompt cache / checkpoint 效果**。
 但這還不是完整 DS4 那種「SSD KV persistence across clean restart」，目前比較接近 **RAM/session prompt cache + context checkpoint**。
 
 ## 背景
 
-Antirez 在 DS4 開發中提到一個關鍵方向：AI 太重要，不能只是一個雲端服務。  
+Antirez 在 DS4 開發中提到一個關鍵方向：AI 太重要，不能只是一個雲端服務。
 對小企業或個人工作流來說，本地模型真正有價值的地方不是「一次回答最強」，而是：
 
 - 固定 SOP
@@ -18,7 +18,7 @@ Antirez 在 DS4 開發中提到一個關鍵方向：AI 太重要，不能只是�
 - 固定品質管理規則
 - 固定 RAG 熱門文件
 
-這些內容如果每次都重新 prefill，會浪費很多時間。  
+這些內容如果每次都重新 prefill，會浪費很多時間。
 如果能把固定 prefix 算過的狀態重用，就能把本地 Agent 的等待時間大幅壓低。
 
 ## 本次實驗目標
@@ -149,7 +149,7 @@ mutated_middle TTFT: 10.383s
 cached_tokens: 0
 ```
 
-這是正確行為。  
+這是正確行為。
 如果 prefix 中間被改掉還命中，反而代表 cache key 或 checkpoint 邏輯有污染風險。
 
 ### 4. steering state 必須進 cache key
@@ -169,7 +169,7 @@ alpha 第二次: hit
 beta 第一次: miss
 ```
 
-這對應 Antirez / DS4 討論的重點：  
+這對應 Antirez / DS4 討論的重點：
 如果未來真的有 vector steering、LoRA、policy vector、style vector，cache 不能只看 prompt 文字。
 
 安全 cache key 至少要包含：
@@ -293,7 +293,7 @@ repo 加入了：
 scripts/qwen_kv_artifact_lab.py
 ```
 
-這個測試還不寫入真的 llama.cpp KV tensor，而是使用 synthetic KV bytes。  
+這個測試還不寫入真的 llama.cpp KV tensor，而是使用 synthetic KV bytes。
 它的目的不是測速度，而是測「未來真的把 KV bytes 放進來時，檔案能不能安全驗證」。
 
 Artifact 格式：
@@ -774,7 +774,7 @@ cold / continued / evict policy
 disk budget eviction
 ```
 
-它和 DS4 一樣是「一個 live session + SSD checkpoint」思路，不是把 active KV buffer 直接搬到 SSD 分頁執行。  
+它和 DS4 一樣是「一個 live session + SSD checkpoint」思路，不是把 active KV buffer 直接搬到 SSD 分頁執行。
 所以目前省的是切換 workflow 時的重算時間，不是單一 active context 的 KV RAM。
 
 重跑 dry-run policy 測試：
@@ -896,7 +896,7 @@ fb disk restore:
 traces/runtime-cache-manager-lab-real-2026-05-15.json
 ```
 
-這次也抓到一個重要限制：llama.cpp whole-slot checkpoint 不是 DS4 那種乾淨 prefix payload。  
+這次也抓到一個重要限制：llama.cpp whole-slot checkpoint 不是 DS4 那種乾淨 prefix payload。
 如果把 `evict` 或 `continued` checkpoint 覆蓋成正式 lookup artifact，可能會把已生成的尾巴一起存進去，讓下一次 prefix hit 變成假命中。
 
 所以目前 manager 的安全做法是：
@@ -1183,6 +1183,197 @@ prefix block eviction
 restore 時不能混用
 ```
 
+## C++ Phase 2: Runtime Identity Verification
+
+Phase 2 把 Phase 1 的 `payload_scope` 安全再往前推一層：
+
+```text
+同一個 prefix artifact 不只要是 prefix-only
+還必須確認它屬於同一個 runtime / model / tokenizer / RoPE / quant / context
+```
+
+新增 metadata：
+
+```text
+runtime_identity
+runtime_identity_hash
+```
+
+`runtime_identity` 目前包含：
+
+```text
+runtime:
+  llama.cpp build_info
+  kv_cache_format_version
+
+model:
+  model name
+  model path
+  architecture
+  model size
+  n_params
+  n_ctx_train
+  n_embd
+
+quant:
+  general.file_type
+
+tokenizer:
+  vocab_type
+  n_vocab
+  tokenizer.ggml.model
+  tokenizer.ggml.pre
+  BOS / EOS / FIM token ids
+
+chat template:
+  source hash
+  tool-use template hash
+  capabilities
+  reasoning settings
+
+RoPE:
+  rope type
+  freq scale
+  freq base
+  dimension count
+  M-RoPE flags
+
+context:
+  slot_n_ctx
+  pooling type
+  multimodal flags
+```
+
+目前 hash 是 deterministic FNV-1a 64-bit hex over ordered JSON：
+
+```text
+runtime_identity_hash: 6f6304b871d1ad2d
+```
+
+這不是 cryptographic SHA256。原因是 Phase 2 先做 runtime safety gate，不在每次 save/restore 時掃整個 3GB+ GGUF 檔。
+之後如果要更嚴格，可以加 optional model file sha256 或用外部 manifest 預先算好。
+
+### C++ Phase 2 Test Result
+
+重新 build：
+
+```text
+/Users/kevinlin911/DS4/build/llama-qwen35-metal/bin/llama-server
+```
+
+本次 Qwen3.5 4B 實測：
+
+```text
+prefix prefill:
+  prompt_n:    57
+  prompt_ms:   271.921
+
+save_prefix:
+  n_saved:     57
+  n_written:   54,560,904 bytes
+  save_ms:     53.201
+  scope:       prefix-only
+  runtime_identity_hash: 6f6304b871d1ad2d
+
+restore_prefix:
+  n_restored:  57
+  n_read:      54,560,904 bytes
+  restore_ms:  21.914
+  runtime_identity_hash: 6f6304b871d1ad2d
+```
+
+metadata 範例：
+
+```json
+{
+  "schema": "llama.cpp-slot-artifact-metadata-v1",
+  "filename": "cpp-phase2-identity-prefix.bin",
+  "payload_scope": "prefix-only",
+  "runtime_identity_hash": "6f6304b871d1ad2d",
+  "runtime_identity": {
+    "schema": "llama.cpp-slot-runtime-identity-v1",
+    "runtime": {
+      "name": "llama.cpp",
+      "build_info": "b1-4c1c3ac",
+      "kv_cache_format_version": "llama-state-seq-file-v1"
+    },
+    "model": {
+      "name": "qwen3.5:4b",
+      "architecture": "qwen35",
+      "size": 3377987584,
+      "n_params": 4659865088,
+      "n_ctx_train": 262144,
+      "n_embd_inp": 2560
+    },
+    "quant": {
+      "general_file_type": "15"
+    },
+    "tokenizer": {
+      "vocab_type": 2,
+      "n_vocab": 248320,
+      "tokenizer_ggml_model": "gpt2",
+      "tokenizer_ggml_pre": "qwen35"
+    },
+    "rope": {
+      "type": 40,
+      "freq_scale_train": 1.0,
+      "freq_base": "10000000.000000",
+      "dimension_count": "64",
+      "mrope_interleaved": "true"
+    },
+    "context": {
+      "slot_n_ctx": 32768,
+      "has_mtmd": false
+    },
+    "hash": "6f6304b871d1ad2d"
+  }
+}
+```
+
+負向測試：
+
+```text
+old Phase 1 metadata missing runtime_identity_hash:
+  result: rejected
+  error:  Slot metadata runtime_identity_hash is missing
+
+tampered runtime_identity_hash:
+  result: rejected
+  error:  Slot metadata runtime_identity_hash does not match current runtime
+```
+
+restore 後再接 tail completion：
+
+```text
+tail_after_restore:
+  prompt_n:      15
+  tokens_cached: 38
+  predicted_n:   24
+```
+
+完整 trace：
+
+```text
+traces/cpp-runtime-identity-slot-api-2026-05-15.json
+```
+
+這代表 Phase C++ 2 已完成：
+
+```text
+prefix-only artifact 已經綁定 runtime identity
+換模型 / tokenizer / RoPE / quant / ctx / build / chat template 時不會誤 restore
+舊 metadata 或被改壞的 metadata 會被拒絕
+```
+
+目前仍然不是：
+
+```text
+active KV RAM 節省
+block-level KV paging
+prefix block eviction
+cryptographic model file sha256
+```
+
 ## Block Boundary Lab
 
 prefix-only 之後，下一步是先把 prefix artifact 拆成「可管理的 block 索引」，但還不碰 C++ runtime。
@@ -1322,7 +1513,7 @@ runtime identity
 
 ### 和 DS4 的差異
 
-DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。  
+DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。
 我們目前的 payload 是 llama.cpp `/slots?action=save` 存出的 whole slot state。
 
 所以目前還有兩個限制：
@@ -1484,7 +1675,7 @@ traces/translation-cache-bench-m1pro-2026-05-15.summary.json
 
 ### Translation Benchmark Takeaway
 
-`minimal_sop` 最快，因為它幾乎沒有前置規則要讀；但它不是同等品質對照。  
+`minimal_sop` 最快，因為它幾乎沒有前置規則要讀；但它不是同等品質對照。
 它缺少：
 
 - 固定術語表
@@ -1561,8 +1752,8 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 
 ## 下一步
 
-1. C++ Phase 2：把 `prefix-only` sidecar 擴成 native manifest，加入 model/tokenizer/RoPE/quant/hash 驗證。
-2. C++ Phase 3：探索 prefix block index，先做可列出/可驗證/可淘汰 block，不急著 paging。
+1. C++ Phase 3：探索 prefix block index，先做可列出/可驗證/可淘汰 block，不急著 paging。
+2. C++ Phase 4：把 block manifest 接到 slot artifact header，確認 block 完整性與依賴鏈。
 3. 測試 12k / 24k / 48k token prefix 的命中曲線。
 4. 用更長文章測試翻譯吞吐量，例如 20 / 50 / 100 段。
 5. 比較 Qwen3.5 4B、Qwen3.6 27B MTP、Gemma 3 4B MTP、DS4 Flash。
@@ -1580,5 +1771,5 @@ Qwen3.5 + llama.cpp 可以吃到很強的 fixed-prefix prompt cache / checkpoint
 
 一句話：
 
-> 固定的知識與流程，不要每次重算。  
+> 固定的知識與流程，不要每次重算。
 > 把它變成本地 AI worker 的快取資產。

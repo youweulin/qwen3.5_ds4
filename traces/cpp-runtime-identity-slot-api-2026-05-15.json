@@ -1,0 +1,141 @@
+{
+  "schema": "qwen3.5-ds4-cpp-runtime-identity-slot-api-trace-v1",
+  "date": "2026-05-15",
+  "runtime": {
+    "server": "llama-server",
+    "source_tree": "/Users/kevinlin911/DS4/deps/llama.cpp",
+    "build": "/Users/kevinlin911/DS4/build/llama-qwen35-metal/bin/llama-server",
+    "base_url": "http://127.0.0.1:18180",
+    "model_alias": "qwen3.5:4b",
+    "ctx_size": 32768,
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/cpp-prefix-slots/"
+  },
+  "changes": {
+    "metadata_schema": "llama.cpp-slot-artifact-metadata-v1",
+    "runtime_identity_schema": "llama.cpp-slot-runtime-identity-v1",
+    "runtime_identity_hash": "deterministic FNV-1a 64-bit hex over ordered runtime identity JSON",
+    "identity_fields": [
+      "runtime build_info",
+      "kv_cache_format_version",
+      "model name/path/architecture/size/n_params/n_ctx_train/n_embd",
+      "quant general.file_type",
+      "tokenizer vocab_type/n_vocab/tokenizer.ggml.model/tokenizer.ggml.pre/special tokens",
+      "chat template source hash/tool-use source hash/caps/reasoning settings",
+      "RoPE type/freq_scale/freq_base/dimension_count/mrope flags",
+      "slot context size/pooling/multimodal flags"
+    ]
+  },
+  "prefix_prefill": {
+    "endpoint": "/completion",
+    "id_slot": 0,
+    "n_predict": 0,
+    "tokens_evaluated": 57,
+    "tokens_cached": 57,
+    "prompt_n": 57,
+    "prompt_ms": 271.921
+  },
+  "save_prefix": {
+    "endpoint": "/slots/0?action=save_prefix",
+    "filename": "cpp-phase2-identity-prefix.bin",
+    "payload_scope": "prefix-only",
+    "runtime_identity_hash": "6f6304b871d1ad2d",
+    "n_saved": 57,
+    "n_written": 54560904,
+    "save_ms": 53.201,
+    "metadata_filename": "cpp-phase2-identity-prefix.bin.meta.json"
+  },
+  "metadata_sample": {
+    "schema": "llama.cpp-slot-artifact-metadata-v1",
+    "payload_scope": "prefix-only",
+    "runtime_identity_hash": "6f6304b871d1ad2d",
+    "runtime_identity": {
+      "schema": "llama.cpp-slot-runtime-identity-v1",
+      "runtime": {
+        "name": "llama.cpp",
+        "build_info": "b1-4c1c3ac",
+        "kv_cache_format_version": "llama-state-seq-file-v1"
+      },
+      "model": {
+        "name": "qwen3.5:4b",
+        "architecture": "qwen35",
+        "size": 3377987584,
+        "n_params": 4659865088,
+        "n_ctx_train": 262144,
+        "n_embd_inp": 2560
+      },
+      "quant": {
+        "general_file_type": "15"
+      },
+      "tokenizer": {
+        "vocab_type": 2,
+        "n_vocab": 248320,
+        "tokenizer_ggml_model": "gpt2",
+        "tokenizer_ggml_pre": "qwen35"
+      },
+      "rope": {
+        "type": 40,
+        "freq_scale_train": 1.0,
+        "freq_base": "10000000.000000",
+        "dimension_count": "64",
+        "mrope_interleaved": "true"
+      },
+      "context": {
+        "slot_n_ctx": 32768,
+        "has_mtmd": false
+      },
+      "hash": "6f6304b871d1ad2d"
+    }
+  },
+  "restore_prefix": {
+    "endpoint": "/slots/0?action=restore_prefix",
+    "filename": "cpp-phase2-identity-prefix.bin",
+    "payload_scope": "prefix-only",
+    "runtime_identity_hash": "6f6304b871d1ad2d",
+    "n_restored": 57,
+    "n_read": 54560904,
+    "restore_ms_first": 21.914,
+    "restore_ms_second": 15.489
+  },
+  "missing_runtime_identity_guard": {
+    "filename": "cpp-phase1-smoke-prefix.bin",
+    "expected_result": "reject",
+    "actual_error": {
+      "code": 400,
+      "type": "invalid_request_error",
+      "message": "Slot metadata runtime_identity_hash is missing"
+    }
+  },
+  "runtime_identity_mismatch_guard": {
+    "filename": "cpp-phase2-identity-mismatch.bin",
+    "tampered_runtime_identity_hash": "0000000000000000",
+    "expected_result": "reject",
+    "actual_error": {
+      "code": 400,
+      "type": "invalid_request_error",
+      "message": "Slot metadata runtime_identity_hash does not match current runtime"
+    }
+  },
+  "tail_after_restore": {
+    "endpoint": "/completion",
+    "id_slot": 0,
+    "tokens_cached": 38,
+    "prompt_n": 15,
+    "prompt_ms": 199.095,
+    "predicted_n": 24,
+    "predicted_ms": 753.772
+  },
+  "result": {
+    "build_ok": true,
+    "save_prefix_identity_ok": true,
+    "metadata_runtime_identity_ok": true,
+    "restore_matching_identity_ok": true,
+    "missing_identity_rejected": true,
+    "mismatched_identity_rejected": true,
+    "tail_after_restore_ok": true
+  },
+  "limits": [
+    "runtime_identity_hash is deterministic and local, but not cryptographic SHA256",
+    "model file bytes are not fully scanned on save to avoid multi-GB startup/save overhead",
+    "active KV RAM is still preallocated; this validates artifact safety, not KV paging"
+  ]
+}
