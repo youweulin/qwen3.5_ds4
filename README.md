@@ -277,6 +277,109 @@ traces/cache-key-lab-2026-05-15.json
 
 這次測試也抓到一個設計細節：第一版 `prefix_key` 不小心把 full prompt hash 放進 key，導致「同 prefix 換 user tail」會錯誤 miss。修正後，prefix scope 不再納入 `prompt_full_sha256`，只有 request scope 會納入。
 
+## KV Artifact Naming / Header Lab
+
+metadata key 通過後，下一步是把它接到實際 KV 檔案外殼：
+
+```text
+cache key -> KV artifact filename
+cache metadata -> KV artifact header
+KV bytes -> payload with sha256 digest
+```
+
+repo 加入了：
+
+```text
+scripts/qwen_kv_artifact_lab.py
+```
+
+這個測試還不寫入真的 llama.cpp KV tensor，而是使用 synthetic KV bytes。  
+它的目的不是測速度，而是測「未來真的把 KV bytes 放進來時，檔案能不能安全驗證」。
+
+Artifact 格式：
+
+```text
+MAGIC:        QWEN35DS4KV1\0
+HEADER_LEN:   8-byte big-endian unsigned integer
+HEADER_JSON:  canonical JSON
+PAYLOAD:      KV bytes, currently synthetic bytes
+```
+
+檔名：
+
+```text
+{cache_scope}-{cache_key}.qkv
+```
+
+header 會包含：
+
+```text
+artifact_schema
+key_domain
+cache_key
+cache_scope
+metadata
+payload_sha256
+payload_size
+created_unix
+created_by
+```
+
+驗證時會檢查：
+
+```text
+1. 檔名 key == header cache_key
+2. header metadata 重新計算出的 key == header cache_key
+3. payload sha256 == header payload_sha256
+4. payload size == header payload_size
+5. 如果有 expected metadata，expected key 必須一致
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_kv_artifact_lab.py \
+  --clean \
+  --trace-json traces/kv-artifact-lab-2026-05-15.json
+```
+
+### KV Artifact Result
+
+本次結果：
+
+```text
+valid_artifact: PASS
+filename_key_mismatch: PASS
+payload_tamper: PASS
+header_metadata_tamper: PASS
+expected_metadata_mismatch: PASS
+```
+
+錯誤驗證也符合預期：
+
+```text
+filename_key_mismatch -> filename_key_matches_header
+payload_tamper -> payload_sha256_matches
+header_metadata_tamper -> header_key_matches_metadata, expected_metadata_key_matches
+expected_metadata_mismatch -> expected_metadata_key_matches
+```
+
+完整 trace：
+
+```text
+traces/kv-artifact-lab-2026-05-15.json
+```
+
+這一步的意義：
+
+```text
+現在已經不是只有「算出 cache key」。
+而是已經有一個能放在 SSD 上的 KV 檔案外殼：
+檔名可索引、header 可驗證、payload 可防竄改、metadata 可拒用錯狀態。
+```
+
+下一步才是把 synthetic payload 換成真正 runtime 存下來的 KV bytes。
+
 ## Translation Workload Benchmark
 
 第一階段 smoke test 證明固定 prefix 會命中，但真正落地時更重要的是：
