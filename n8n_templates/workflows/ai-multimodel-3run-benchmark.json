@@ -1,0 +1,94 @@
+{
+  "name": "AI - Multi Model 3 Run Benchmark",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-multimodel-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "policy_name",
+              "type": "string",
+              "value": "content-repurpose-review"
+            },
+            {
+              "name": "prompt",
+              "type": "string",
+              "value": "請把以下內容改寫成一篇台灣繁中 FB 貼文，不放連結，保留來源名稱即可。內容：本地 AI 工作流如果有固定 SOP，可以用 prefix cache 減少重複 prefill；雲端模型則適合高品質 final rewrite。"
+            },
+            {
+              "name": "max_tokens",
+              "type": "number",
+              "value": 256
+            },
+            {
+              "name": "runs_per_model",
+              "type": "number",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "id": "set-multimodel-input",
+      "name": "Set Benchmark Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst prompt = input.prompt;\nconst policyName = input.policy_name || 'manual';\nconst maxTokens = Number(input.max_tokens || 256);\nconst runsPerModel = Math.max(1, Number(input.runs_per_model || 3));\nconst benchmarkId = `bench-${Date.now()}`;\n\nconst localUrl = $env.LOCAL_AI_BASE_URL || 'http://host.docker.internal:18180/v1/chat/completions';\nconst cloudUrl = $env.CLOUD_AI_BASE_URL || '';\nconst cloudApiKey = $env.CLOUD_AI_API_KEY || '';\n\nconst models = [\n  {\n    provider: 'local',\n    label: 'local-qwen',\n    url: localUrl,\n    model: $env.LOCAL_AI_MODEL || 'qwen3.5:4b',\n    apiKey: '',\n    inputRate: Number($env.LOCAL_AI_INPUT_USD_PER_1K || 0),\n    outputRate: Number($env.LOCAL_AI_OUTPUT_USD_PER_1K || 0)\n  },\n  {\n    provider: 'cloud',\n    label: 'gemini-flash-lite',\n    url: cloudUrl,\n    model: $env.CLOUD_AI_MODEL || '',\n    apiKey: cloudApiKey,\n    inputRate: Number($env.CLOUD_AI_INPUT_USD_PER_1K || 0),\n    outputRate: Number($env.CLOUD_AI_OUTPUT_USD_PER_1K || 0)\n  },\n  {\n    provider: 'cloud',\n    label: 'gemma-4-26b',\n    url: cloudUrl,\n    model: $env.CLOUD_AI_MODEL_ALT || '',\n    apiKey: cloudApiKey,\n    inputRate: Number($env.CLOUD_AI_ALT_INPUT_USD_PER_1K || $env.CLOUD_AI_INPUT_USD_PER_1K || 0),\n    outputRate: Number($env.CLOUD_AI_ALT_OUTPUT_USD_PER_1K || $env.CLOUD_AI_OUTPUT_USD_PER_1K || 0)\n  }\n];\n\nfunction buildBody(model) {\n  return {\n    model,\n    temperature: 0.2,\n    max_tokens: maxTokens,\n    messages: [\n      {\n        role: 'system',\n        content: [\n          `Use policy ${policyName}.`,\n          'Write in Traditional Chinese for Taiwan readers.',\n          'Do not reveal hidden reasoning, chain-of-thought, or <think> blocks.',\n          'Return only the final answer text.'\n        ].join('\\n')\n      },\n      { role: 'user', content: prompt }\n    ]\n  };\n}\n\nfunction usageOf(result) {\n  const usage = result.usage || {};\n  const promptTokens = Number(usage.prompt_tokens || usage.input_tokens || 0);\n  const completionTokens = Number(usage.completion_tokens || usage.output_tokens || 0);\n  const totalTokens = Number(usage.total_tokens || promptTokens + completionTokens || 0);\n  return { promptTokens, completionTokens, totalTokens };\n}\n\nfunction estimateCost(usage, inputRate, outputRate) {\n  return (usage.promptTokens / 1000) * inputRate + (usage.completionTokens / 1000) * outputRate;\n}\n\nfunction textQuality(content, error) {\n  const text = String(content || '');\n  const hasThoughtLeak = /<think>|<thought>|Thinking Process|chain[- ]of[- ]thought/i.test(text);\n  const hasTraditionalChinese = /[\\u4e00-\\u9fff]/.test(text);\n  const hasFbShape = /。|！|？|\\n/.test(text) || text.length >= 80;\n  let score = 0;\n  if (!error) score += 30;\n  if (text.trim().length > 0) score += 20;\n  if (!hasThoughtLeak) score += 25;\n  if (hasTraditionalChinese) score += 15;\n  if (hasFbShape) score += 10;\n  return {\n    quality_score: score,\n    has_thought_leak: hasThoughtLeak,\n    has_traditional_chinese: hasTraditionalChinese,\n    output_chars: text.length\n  };\n}\n\nasync function callModel(def, runIndex) {\n  if (!def.url || !def.model) {\n    const quality = textQuality('', 'missing url or model');\n    return {\n      benchmark_id: benchmarkId,\n      row_type: 'run',\n      provider: def.provider,\n      model_label: def.label,\n      model: def.model || '',\n      run_index: runIndex,\n      skipped: true,\n      error: 'missing url or model',\n      latency_ms: null,\n      prompt_tokens: 0,\n      completion_tokens: 0,\n      total_tokens: 0,\n      estimated_cost_usd: 0,\n      output_preview: '',\n      ...quality\n    };\n  }\n\n  const started = Date.now();\n  try {\n    const headers = { 'Content-Type': 'application/json' };\n    if (def.apiKey) headers.Authorization = `Bearer ${def.apiKey}`;\n\n    const result = await this.helpers.httpRequest({\n      method: 'POST',\n      url: def.url,\n      headers,\n      body: buildBody(def.model),\n      json: true,\n      timeout: 120000\n    });\n\n    const latencyMs = Date.now() - started;\n    const usage = usageOf(result);\n    const content = result.choices?.[0]?.message?.content || result.output_text || '';\n    const quality = textQuality(content, null);\n\n    return {\n      benchmark_id: benchmarkId,\n      row_type: 'run',\n      provider: def.provider,\n      model_label: def.label,\n      model: def.model,\n      run_index: runIndex,\n      skipped: false,\n      error: '',\n      latency_ms: latencyMs,\n      prompt_tokens: usage.promptTokens,\n      completion_tokens: usage.completionTokens,\n      total_tokens: usage.totalTokens,\n      estimated_cost_usd: estimateCost(usage, def.inputRate, def.outputRate),\n      output_preview: String(content).slice(0, 300),\n      ...quality\n    };\n  } catch (error) {\n    const quality = textQuality('', error.message);\n    return {\n      benchmark_id: benchmarkId,\n      row_type: 'run',\n      provider: def.provider,\n      model_label: def.label,\n      model: def.model,\n      run_index: runIndex,\n      skipped: false,\n      error: error.message,\n      latency_ms: Date.now() - started,\n      prompt_tokens: 0,\n      completion_tokens: 0,\n      total_tokens: 0,\n      estimated_cost_usd: 0,\n      output_preview: '',\n      ...quality\n    };\n  }\n}\n\nfunction avg(values) {\n  const clean = values.filter(v => typeof v === 'number' && Number.isFinite(v));\n  if (!clean.length) return null;\n  return clean.reduce((a, b) => a + b, 0) / clean.length;\n}\n\nfunction min(values) {\n  const clean = values.filter(v => typeof v === 'number' && Number.isFinite(v));\n  return clean.length ? Math.min(...clean) : null;\n}\n\nfunction max(values) {\n  const clean = values.filter(v => typeof v === 'number' && Number.isFinite(v));\n  return clean.length ? Math.max(...clean) : null;\n}\n\nconst rows = [];\nfor (const modelDef of models) {\n  for (let i = 1; i <= runsPerModel; i++) {\n    rows.push(await callModel.call(this, modelDef, i));\n  }\n}\n\nconst summaries = models.map(def => {\n  const runs = rows.filter(r => r.model_label === def.label);\n  const successful = runs.filter(r => !r.error && !r.skipped);\n  return {\n    benchmark_id: benchmarkId,\n    row_type: 'summary',\n    provider: def.provider,\n    model_label: def.label,\n    model: def.model || '',\n    run_index: 0,\n    skipped: runs.every(r => r.skipped),\n    error: successful.length ? '' : (runs[0]?.error || 'no successful runs'),\n    latency_ms: avg(successful.map(r => r.latency_ms)),\n    latency_min_ms: min(successful.map(r => r.latency_ms)),\n    latency_max_ms: max(successful.map(r => r.latency_ms)),\n    prompt_tokens: avg(successful.map(r => r.prompt_tokens)),\n    completion_tokens: avg(successful.map(r => r.completion_tokens)),\n    total_tokens: avg(successful.map(r => r.total_tokens)),\n    estimated_cost_usd: avg(successful.map(r => r.estimated_cost_usd)),\n    total_cost_usd_3runs: successful.reduce((sum, r) => sum + Number(r.estimated_cost_usd || 0), 0),\n    quality_score: avg(successful.map(r => r.quality_score)),\n    has_thought_leak: successful.some(r => r.has_thought_leak),\n    has_traditional_chinese: successful.every(r => r.has_traditional_chinese),\n    output_chars: avg(successful.map(r => r.output_chars)),\n    output_preview: successful[0]?.output_preview || '',\n    runs_successful: successful.length,\n    runs_total: runs.length\n  };\n});\n\nconst bestSpeed = summaries\n  .filter(s => typeof s.latency_ms === 'number')\n  .sort((a, b) => a.latency_ms - b.latency_ms)[0]?.model_label || 'unknown';\nconst bestQuality = summaries\n  .filter(s => typeof s.quality_score === 'number')\n  .sort((a, b) => b.quality_score - a.quality_score)[0]?.model_label || 'unknown';\nconst lowestCost = summaries\n  .filter(s => typeof s.estimated_cost_usd === 'number')\n  .sort((a, b) => a.estimated_cost_usd - b.estimated_cost_usd)[0]?.model_label || 'unknown';\n\nconst comparison = {\n  benchmark_id: benchmarkId,\n  row_type: 'comparison',\n  provider: 'all',\n  model_label: 'comparison-table',\n  model: models.map(m => m.model).join(' vs '),\n  run_index: 0,\n  skipped: false,\n  error: '',\n  latency_ms: null,\n  prompt_tokens: null,\n  completion_tokens: null,\n  total_tokens: null,\n  estimated_cost_usd: null,\n  quality_score: null,\n  has_thought_leak: summaries.some(s => s.has_thought_leak),\n  has_traditional_chinese: summaries.every(s => s.has_traditional_chinese),\n  output_chars: null,\n  best_speed: bestSpeed,\n  best_quality_proxy: bestQuality,\n  lowest_cost: lowestCost,\n  output_preview: JSON.stringify(summaries.map(s => ({\n    model_label: s.model_label,\n    model: s.model,\n    avg_latency_ms: s.latency_ms,\n    min_latency_ms: s.latency_min_ms,\n    max_latency_ms: s.latency_max_ms,\n    avg_total_tokens: s.total_tokens,\n    avg_cost_usd: s.estimated_cost_usd,\n    avg_quality_score: s.quality_score,\n    thought_leak: s.has_thought_leak,\n    success: `${s.runs_successful}/${s.runs_total}`\n  })))\n};\n\nreturn [...rows, ...summaries, comparison].map(row => ({\n  json: {\n    created_at: new Date().toISOString(),\n    workflow: 'ai-multimodel-3run-benchmark',\n    policy_name: policyName,\n    prompt_chars: prompt.length,\n    max_tokens: maxTokens,\n    runs_per_model: runsPerModel,\n    ...row\n  }\n}));"
+      },
+      "id": "code-run-multimodel",
+      "name": "Code: Run 3x Multi Model Benchmark",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$env.REVIEW_SHEET_ID}}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AI Benchmarks"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        }
+      },
+      "id": "sheet-multimodel-results",
+      "name": "Google Sheets: Benchmark Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [780, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "Set Benchmark Input", "type": "main", "index": 0 }]]
+    },
+    "Set Benchmark Input": {
+      "main": [[{ "node": "Code: Run 3x Multi Model Benchmark", "type": "main", "index": 0 }]]
+    },
+    "Code: Run 3x Multi Model Benchmark": {
+      "main": [[{ "node": "Google Sheets: Benchmark Results", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Taipei"
+  }
+}

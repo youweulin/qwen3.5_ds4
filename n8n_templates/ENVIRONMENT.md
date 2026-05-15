@@ -35,9 +35,12 @@ LOCAL_AI_OUTPUT_USD_PER_1K=0
 
 CLOUD_AI_BASE_URL=<openai-compatible-chat-completions-url>
 CLOUD_AI_MODEL=<cloud-model-name>
+CLOUD_AI_MODEL_ALT=<second-cloud-model-name>
 CLOUD_AI_API_KEY=<cloud-api-key>
 CLOUD_AI_INPUT_USD_PER_1K=<input-price>
 CLOUD_AI_OUTPUT_USD_PER_1K=<output-price>
+CLOUD_AI_ALT_INPUT_USD_PER_1K=<optional-alt-input-price>
+CLOUD_AI_ALT_OUTPUT_USD_PER_1K=<optional-alt-output-price>
 
 REVIEW_SHEET_ID=<your-google-sheet-id>
 TIMEZONE=Asia/Taipei
@@ -49,10 +52,13 @@ TIMEZONE=Asia/Taipei
 
 ```text
 CLOUD_AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
-CLOUD_AI_MODEL=gemini-2.5-flash
+CLOUD_AI_MODEL=gemini-3.1-flash-lite
+CLOUD_AI_MODEL_ALT=gemma-4-26b-a4b-it
 CLOUD_AI_API_KEY=<your-gemini-api-key>
 CLOUD_AI_INPUT_USD_PER_1K=<current-input-price>
 CLOUD_AI_OUTPUT_USD_PER_1K=<current-output-price>
+CLOUD_AI_ALT_INPUT_USD_PER_1K=<current-alt-input-price>
+CLOUD_AI_ALT_OUTPUT_USD_PER_1K=<current-alt-output-price>
 ```
 
 價格請用你當下 API 後台或官方價格頁填入。
@@ -97,4 +103,3 @@ input_tokens / 1000 * INPUT_USD_PER_1K
 ```
 
 本地預設為 0。若要算電費或硬體攤提，可以自己填入估算值。
-

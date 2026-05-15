@@ -45,6 +45,7 @@ TIMEZONE=Asia/Taipei
 
 | Workflow | Best for | Human review | AI cache value |
 | --- | --- | --- | --- |
+| `ai-multimodel-3run-benchmark.json` | 3 models x 3 runs speed/cost/quality table | No | Measurement |
 | `ai-provider-speed-cost-benchmark.json` | Compare local vs cloud speed/cost | No | Measurement |
 | `content-repurpose-review.json` | 一篇文章/逐字稿產生 FB/IG/Threads/Email | Yes | High |
 | `lead-intake-crm-followup.json` | 表單名單整理、分級、寄追蹤信 | Yes | Medium |
@@ -96,6 +97,7 @@ save_prefix
 先匯入：
 
 ```text
+workflows/ai-multimodel-3run-benchmark.json
 workflows/ai-provider-speed-cost-benchmark.json
 ```
 
@@ -105,7 +107,28 @@ workflows/ai-provider-speed-cost-benchmark.json
 BENCHMARKING.md
 ```
 
-這個 workflow 會用同一個 prompt 同時測：
+`ai-multimodel-3run-benchmark` 會用同一個 prompt 分別測三個模型，每個模型跑三次：
+
+```text
+local-qwen:
+  LOCAL_AI_MODEL
+
+gemini-flash-lite:
+  CLOUD_AI_MODEL
+
+gemma-4-26b:
+  CLOUD_AI_MODEL_ALT
+```
+
+輸出：
+
+```text
+9 rows: each single run
+3 rows: per-model summary
+1 row: comparison table
+```
+
+`ai-provider-speed-cost-benchmark` 則是簡單 local vs cloud 單次對照：
 
 ```text
 local:

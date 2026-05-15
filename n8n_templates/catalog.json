@@ -3,6 +3,15 @@
   "updated": "2026-05-15",
   "templates": [
     {
+      "id": "ai-multimodel-3run-benchmark",
+      "workflow": "workflows/ai-multimodel-3run-benchmark.json",
+      "policy": null,
+      "priority": 0,
+      "for": ["solo-founder", "small-team", "ai-consultant"],
+      "value": "Run local Qwen, Gemini Flash Lite, and Gemma 4 26B three times each, then output run rows plus summary comparison.",
+      "cache_value": "measurement"
+    },
+    {
       "id": "ai-provider-speed-cost-benchmark",
       "workflow": "workflows/ai-provider-speed-cost-benchmark.json",
       "policy": null,

@@ -12,10 +12,22 @@
 
 ## Workflow
 
-Import:
+Multi-model, each model runs three times:
+
+```text
+n8n_templates/workflows/ai-multimodel-3run-benchmark.json
+```
+
+Single local-vs-cloud run:
 
 ```text
 n8n_templates/workflows/ai-provider-speed-cost-benchmark.json
+```
+
+Import:
+
+```text
+Use n8n Import from File.
 ```
 
 輸出會寫到 Google Sheet：
@@ -61,9 +73,12 @@ LOCAL_AI_OUTPUT_USD_PER_1K=0
 ```text
 CLOUD_AI_BASE_URL=<openai-compatible-chat-completions-url>
 CLOUD_AI_MODEL=<cloud-model-name>
+CLOUD_AI_MODEL_ALT=<second-cloud-model-name>
 CLOUD_AI_API_KEY=<api-key>
 CLOUD_AI_INPUT_USD_PER_1K=<input-price>
 CLOUD_AI_OUTPUT_USD_PER_1K=<output-price>
+CLOUD_AI_ALT_INPUT_USD_PER_1K=<optional-alt-input-price>
+CLOUD_AI_ALT_OUTPUT_USD_PER_1K=<optional-alt-output-price>
 ```
 
 Google Sheet：
@@ -73,6 +88,33 @@ REVIEW_SHEET_ID=<google-sheet-id>
 ```
 
 ## What To Measure
+
+For `ai-multimodel-3run-benchmark`, each model runs separately three times:
+
+```text
+local-qwen:
+  run_index 1
+  run_index 2
+  run_index 3
+
+gemini-flash-lite:
+  run_index 1
+  run_index 2
+  run_index 3
+
+gemma-4-26b:
+  run_index 1
+  run_index 2
+  run_index 3
+```
+
+Then it writes:
+
+```text
+row_type=run
+row_type=summary
+row_type=comparison
+```
 
 速度：
 
@@ -148,6 +190,17 @@ estimated_cost = input_tokens / 1000 * input_rate
 可用 prefix cache 省 prefill
 ```
 
+Quality proxy:
+
+```text
+quality_score
+has_thought_leak
+has_traditional_chinese
+output_chars
+```
+
+這不是人工品質判分，只是快速抓明顯問題，例如 `<think>` 或 `<thought>` 外漏。
+
 最實用的結論不是「本地或雲端誰取代誰」，而是 routing：
 
 ```text
@@ -163,4 +216,3 @@ estimated_cost = input_tokens / 1000 * input_rate
   困難推理
   需要更強模型品質的任務
 ```
-
