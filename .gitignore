@@ -1,0 +1,19 @@
+# Local runtime files
+.DS_Store
+__pycache__/
+*.pyc
+
+# Large local artifacts
+models/
+build/
+deps/
+outputs/
+*.gguf
+*.pdf
+*.doc
+*.docx
+
+# Local cache/state
+.qwen-slots/
+.qwen-worker/
+.rooming-server/
