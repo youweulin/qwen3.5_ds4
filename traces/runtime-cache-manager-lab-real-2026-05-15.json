@@ -1,0 +1,447 @@
+{
+  "base_url": "http://127.0.0.1:18180",
+  "dry_run": false,
+  "events": [
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "cold_miss",
+      "unix": 1778815659,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "cold_save",
+      "payload_size": 156478440,
+      "save_latency_s": 0.1497271250045742,
+      "slot_response": {
+        "filename": "runtime-save-cold-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.bin",
+        "id_slot": 0,
+        "n_saved": 3165,
+        "n_written": 156478440,
+        "timings": {
+          "save_ms": 148.93
+        }
+      },
+      "unix": 1778815669,
+      "updates_lookup": true,
+      "workflow_id": "fb"
+    },
+    {
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 9.116874792001909,
+      "event": "completion",
+      "prompt_n": 3150,
+      "request_index": 0,
+      "source": "cold",
+      "unix": 1778815669,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "event": "cold_miss",
+      "unix": 1778815669,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "event": "cold_save",
+      "payload_size": 156412856,
+      "save_latency_s": 0.3100147079967428,
+      "slot_response": {
+        "filename": "runtime-save-cold-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.bin",
+        "id_slot": 0,
+        "n_saved": 3163,
+        "n_written": 156412856,
+        "timings": {
+          "save_ms": 309.258
+        }
+      },
+      "unix": 1778815679,
+      "updates_lookup": true,
+      "workflow_id": "translation"
+    },
+    {
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "completion_latency_s": 9.0350118330025,
+      "event": "completion",
+      "prompt_n": 3148,
+      "request_index": 1,
+      "source": "cold",
+      "unix": 1778815679,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "disk_hit_restore",
+      "payload_size": 156478440,
+      "restore_latency_s": 0.020179416998871602,
+      "restored": true,
+      "unix": 1778815679
+    },
+    {
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 2.0175571250001667,
+      "event": "completion",
+      "prompt_n": 509,
+      "request_index": 2,
+      "source": "disk",
+      "unix": 1778815681,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/session-checkpoints/evict/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "evict_save",
+      "payload_size": 156183312,
+      "save_latency_s": 0.32873500000278,
+      "slot_response": {
+        "filename": "runtime-save-evict-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.bin",
+        "id_slot": 0,
+        "n_saved": 3156,
+        "n_written": 156183312,
+        "timings": {
+          "save_ms": 327.475
+        }
+      },
+      "unix": 1778815682,
+      "updates_lookup": false,
+      "workflow_id": "fb"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.qkv",
+      "cache_key": "f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a",
+      "event": "cold_miss",
+      "unix": 1778815682,
+      "workflow_id": "rooming"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.qkv",
+      "cache_key": "f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a",
+      "event": "cold_save",
+      "payload_size": 157888496,
+      "save_latency_s": 0.3048936249979306,
+      "slot_response": {
+        "filename": "runtime-save-cold-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.bin",
+        "id_slot": 0,
+        "n_saved": 3208,
+        "n_written": 157888496,
+        "timings": {
+          "save_ms": 304.174
+        }
+      },
+      "unix": 1778815693,
+      "updates_lookup": true,
+      "workflow_id": "rooming"
+    },
+    {
+      "cache_key": "f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a",
+      "completion_latency_s": 9.199940750004316,
+      "event": "completion",
+      "prompt_n": 3193,
+      "request_index": 3,
+      "source": "cold",
+      "unix": 1778815693,
+      "workflow_id": "rooming"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "event": "disk_hit_restore",
+      "payload_size": 156412856,
+      "restore_latency_s": 0.022833957998955157,
+      "restored": true,
+      "unix": 1778815693
+    },
+    {
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "completion_latency_s": 1.936693917006778,
+      "event": "completion",
+      "prompt_n": 468,
+      "request_index": 4,
+      "source": "disk",
+      "unix": 1778815695,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/session-checkpoints/evict/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "event": "evict_save",
+      "payload_size": 156314480,
+      "save_latency_s": 0.5059125000043423,
+      "slot_response": {
+        "filename": "runtime-save-evict-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.bin",
+        "id_slot": 0,
+        "n_saved": 3160,
+        "n_written": 156314480,
+        "timings": {
+          "save_ms": 504.341
+        }
+      },
+      "unix": 1778815696,
+      "updates_lookup": false,
+      "workflow_id": "translation"
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "disk_hit_restore",
+      "payload_size": 156478440,
+      "restore_latency_s": 0.021815333995618857,
+      "restored": true,
+      "unix": 1778815697
+    },
+    {
+      "artifact_path": "artifacts/runtime-cache-artifacts-real/session-checkpoints/continued/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "event": "continued_save",
+      "payload_size": 156183312,
+      "save_latency_s": 0.27592962500057183,
+      "slot_response": {
+        "filename": "runtime-save-continued-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.bin",
+        "id_slot": 0,
+        "n_saved": 3156,
+        "n_written": 156183312,
+        "timings": {
+          "save_ms": 275.174
+        }
+      },
+      "unix": 1778815700,
+      "updates_lookup": false,
+      "workflow_id": "fb"
+    },
+    {
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 1.92334308399586,
+      "event": "completion",
+      "prompt_n": 464,
+      "request_index": 5,
+      "source": "disk",
+      "unix": 1778815700,
+      "workflow_id": "fb"
+    }
+  ],
+  "policy": {
+    "artifact_dir": "artifacts/runtime-cache-artifacts-real",
+    "continued_interval_requests": 2,
+    "disk_budget_mib": 1024.0,
+    "index_path": "artifacts/runtime-cache-artifacts-real/runtime-cache-index.json",
+    "manager_policy_sha256": "020fe28ce7d3a01b91be16263ab9e1ae08fe5eed8ccf3b712ef0a125a3f0f8ad",
+    "min_cache_chars": 1024,
+    "prefix_chars": 6000,
+    "sequence": [
+      "fb",
+      "translation",
+      "fb",
+      "rooming",
+      "translation",
+      "fb"
+    ],
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/runtime-cache-slots/"
+  },
+  "requests": [
+    {
+      "cache_hit": false,
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 9.116874792001909,
+      "completion_preview": "{\n  \"hook\": \"Calbee 14 款商品突然",
+      "prompt_n": 3150,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+        "response": {
+          "filename": "runtime-save-cold-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.bin",
+          "id_slot": 0,
+          "n_saved": 3165,
+          "n_written": 156478440,
+          "timings": {
+            "save_ms": 148.93
+          }
+        },
+        "save_latency_s": 0.1497271250045742,
+        "updates_lookup": true,
+        "verify": {
+          "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts-real/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+          "payload_sha256": "736d216a6418fe073b8aa2564a23a6024be2f48604ccfb5cde8caf808899fcbb",
+          "payload_size": 156478440
+        }
+      },
+      "source": "cold",
+      "workflow_id": "fb"
+    },
+    {
+      "cache_hit": false,
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "completion_latency_s": 9.0350118330025,
+      "completion_preview": "{\n  \"translation\": \"地方政府因訪日旅客增加，正逐步",
+      "prompt_n": 3148,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+        "response": {
+          "filename": "runtime-save-cold-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.bin",
+          "id_slot": 0,
+          "n_saved": 3163,
+          "n_written": 156412856,
+          "timings": {
+            "save_ms": 309.258
+          }
+        },
+        "save_latency_s": 0.3100147079967428,
+        "updates_lookup": true,
+        "verify": {
+          "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts-real/prefix-7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd.qkv",
+          "payload_sha256": "0dd4272b0e2829b45c25e5e811609dbcb9bf30f7023be799e4ad163fa5d357c8",
+          "payload_size": 156412856
+        }
+      },
+      "source": "cold",
+      "workflow_id": "translation"
+    },
+    {
+      "cache_hit": true,
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 2.0175571250001667,
+      "completion_preview": "{\n  \"hook\": \"日本地方鐵道正迎來觀光客",
+      "prompt_n": 509,
+      "restore_latency_s": 0.020179416998871602,
+      "save": null,
+      "source": "disk",
+      "workflow_id": "fb"
+    },
+    {
+      "cache_hit": false,
+      "cache_key": "f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a",
+      "completion_latency_s": 9.199940750004316,
+      "completion_preview": "{\n  \"summary\": \"Rooming list 檢查完成。\",\n",
+      "prompt_n": 3193,
+      "restore_latency_s": 0.0,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts-real/prefix-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.qkv",
+        "response": {
+          "filename": "runtime-save-cold-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.bin",
+          "id_slot": 0,
+          "n_saved": 3208,
+          "n_written": 157888496,
+          "timings": {
+            "save_ms": 304.174
+          }
+        },
+        "save_latency_s": 0.3048936249979306,
+        "updates_lookup": true,
+        "verify": {
+          "cache_key": "f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts-real/prefix-f154ca2a0df34b6c49bc4e6872c67ddf0026b65fc2a3804d30c980b5f94b852a.qkv",
+          "payload_sha256": "18bca647a249b6f16f7ecf7eef949db55a90dbbd99d7917f13782fcc3884ddf9",
+          "payload_size": 157888496
+        }
+      },
+      "source": "cold",
+      "workflow_id": "rooming"
+    },
+    {
+      "cache_hit": true,
+      "cache_key": "7d7546a887892c7d0f242804610c2e05594e462950f1f285889183879bf25ebd",
+      "completion_latency_s": 1.936693917006778,
+      "completion_preview": "{\n  \"translation\": \"為避開週末的擁擠，旅遊",
+      "prompt_n": 468,
+      "restore_latency_s": 0.022833957998955157,
+      "save": null,
+      "source": "disk",
+      "workflow_id": "translation"
+    },
+    {
+      "cache_hit": true,
+      "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+      "completion_latency_s": 1.92334308399586,
+      "completion_preview": "{\n  \"hook\": \"日本地方鐵道因觀光客回流，",
+      "prompt_n": 464,
+      "restore_latency_s": 0.021815333995618857,
+      "save": {
+        "artifact_path": "artifacts/runtime-cache-artifacts-real/session-checkpoints/continued/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+        "response": {
+          "filename": "runtime-save-continued-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.bin",
+          "id_slot": 0,
+          "n_saved": 3156,
+          "n_written": 156183312,
+          "timings": {
+            "save_ms": 275.174
+          }
+        },
+        "save_latency_s": 0.27592962500057183,
+        "updates_lookup": false,
+        "verify": {
+          "cache_key": "06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3",
+          "cache_scope": "prefix",
+          "checks": {
+            "expected_metadata_key_matches": true,
+            "filename_key_matches_header": true,
+            "filename_suffix": true,
+            "header_key_matches_metadata": true,
+            "payload_sha256_matches": true,
+            "payload_size_matches": true
+          },
+          "ok": true,
+          "path": "artifacts/runtime-cache-artifacts-real/session-checkpoints/continued/prefix-06ddc9c79c87ba8edd66fc6bfa1081a6df193e3deee48135b741300cffc727b3.qkv",
+          "payload_sha256": "4bcdd1fb1e00b7fdcbac25f270a02ea78a7755d94f53404a5d038809a334ec9c",
+          "payload_size": 156183312
+        }
+      },
+      "source": "disk",
+      "workflow_id": "fb"
+    }
+  ],
+  "schema": "qwen3.5-ds4-runtime-cache-manager-lab-v1",
+  "slot_id": 0,
+  "summary": {
+    "artifact_bytes": 470783871,
+    "artifact_count": 3,
+    "artifact_mib": 448.9744863510132,
+    "cache_hits": 3,
+    "cache_misses": 3,
+    "disk_budget_evictions": 0,
+    "ok": true,
+    "requests": 6,
+    "saves_by_reason": {
+      "cold": 3,
+      "continued": 1,
+      "evict": 2
+    }
+  }
+}

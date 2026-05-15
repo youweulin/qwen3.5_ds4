@@ -3,15 +3,15 @@
   "dry_run": true,
   "events": [
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "cold_miss",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "fb"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "cold_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -20,29 +20,30 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": true,
       "workflow_id": "fb"
     },
     {
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 2165,
       "request_index": 0,
       "source": "cold",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "fb"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "event": "cold_miss",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "translation"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "event": "cold_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -51,41 +52,42 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": true,
       "workflow_id": "translation"
     },
     {
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 2177,
       "request_index": 1,
       "source": "cold",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "translation"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "disk_hit_restore",
       "payload_size": 2097152,
       "restore_latency_s": 0.0,
       "restored": true,
-      "unix": 1778815274
+      "unix": 1778815649
     },
     {
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 512,
       "request_index": 2,
       "source": "disk",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "fb"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/session-checkpoints/evict/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "evict_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -94,19 +96,20 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": false,
       "workflow_id": "fb"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
-      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c.qkv",
+      "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
       "event": "cold_miss",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "rooming"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
-      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c.qkv",
+      "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
       "event": "cold_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -115,36 +118,37 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": true,
       "workflow_id": "rooming"
     },
     {
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "event": "disk_budget_evict",
-      "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+      "path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
       "size": 2098514,
-      "unix": 1778815274
+      "unix": 1778815649
     },
     {
-      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 2165,
       "request_index": 3,
       "source": "cold",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "rooming"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "event": "cold_miss",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "translation"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "event": "cold_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -153,38 +157,39 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": true,
       "workflow_id": "translation"
     },
     {
-      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
       "event": "disk_budget_evict",
-      "path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+      "path": "artifacts/runtime-cache-artifacts/prefix-2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c.qkv",
       "size": 2098510,
-      "unix": 1778815274
+      "unix": 1778815649
     },
     {
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 2174,
       "request_index": 4,
       "source": "cold",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "translation"
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "disk_hit_restore",
       "payload_size": 2097152,
       "restore_latency_s": 0.0,
       "restored": true,
-      "unix": 1778815274
+      "unix": 1778815649
     },
     {
-      "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "artifact_path": "artifacts/runtime-cache-artifacts/session-checkpoints/continued/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "event": "continued_save",
       "payload_size": 2097152,
       "save_latency_s": 0.0,
@@ -193,17 +198,18 @@
         "n_saved": 42,
         "n_written": 2097152
       },
-      "unix": 1778815274,
+      "unix": 1778815649,
+      "updates_lookup": false,
       "workflow_id": "fb"
     },
     {
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "event": "completion",
       "prompt_n": 512,
       "request_index": 5,
       "source": "disk",
-      "unix": 1778815274,
+      "unix": 1778815649,
       "workflow_id": "fb"
     }
   ],
@@ -228,21 +234,22 @@
   "requests": [
     {
       "cache_hit": false,
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 2165,
       "restore_latency_s": 0.0,
       "save": {
-        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
         "response": {
           "dry_run": true,
           "n_saved": 42,
           "n_written": 2097152
         },
         "save_latency_s": 0.0,
+        "updates_lookup": true,
         "verify": {
-          "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+          "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
           "cache_scope": "prefix",
           "checks": {
             "expected_metadata_key_matches": true,
@@ -253,8 +260,8 @@
             "payload_size_matches": true
           },
           "ok": true,
-          "path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-          "payload_sha256": "32f0d75ffdc170cc29f93d43daa891e0d13a632ab3646383dbd14790bbfcbe7f",
+          "path": "artifacts/runtime-cache-artifacts/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+          "payload_sha256": "d14ba86f4bcb0ac72e99dc4f2b4e54db0a106798d63f5d707469ee58a59bae56",
           "payload_size": 2097152
         }
       },
@@ -263,21 +270,22 @@
     },
     {
       "cache_hit": false,
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 2177,
       "restore_latency_s": 0.0,
       "save": {
-        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
         "response": {
           "dry_run": true,
           "n_saved": 42,
           "n_written": 2097152
         },
         "save_latency_s": 0.0,
+        "updates_lookup": true,
         "verify": {
-          "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+          "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
           "cache_scope": "prefix",
           "checks": {
             "expected_metadata_key_matches": true,
@@ -288,8 +296,8 @@
             "payload_size_matches": true
           },
           "ok": true,
-          "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-          "payload_sha256": "196bb1a48ab5d135e6901e7e3dc57ce4bc3892076f2e2e9a4412b71760a25b3a",
+          "path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+          "payload_sha256": "ecbb08b411c5518dd7364ed27c3d609d36ce1aea5436404b2e8e5071c803d2f8",
           "payload_size": 2097152
         }
       },
@@ -298,7 +306,7 @@
     },
     {
       "cache_hit": true,
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 512,
@@ -309,21 +317,22 @@
     },
     {
       "cache_hit": false,
-      "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+      "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 2165,
       "restore_latency_s": 0.0,
       "save": {
-        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c.qkv",
         "response": {
           "dry_run": true,
           "n_saved": 42,
           "n_written": 2097152
         },
         "save_latency_s": 0.0,
+        "updates_lookup": true,
         "verify": {
-          "cache_key": "44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133",
+          "cache_key": "2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c",
           "cache_scope": "prefix",
           "checks": {
             "expected_metadata_key_matches": true,
@@ -334,8 +343,8 @@
             "payload_size_matches": true
           },
           "ok": true,
-          "path": "artifacts/runtime-cache-artifacts/prefix-44f387a26c8687926391086739d875d167a2730d8e8d6739eb73b46dabb0c133.qkv",
-          "payload_sha256": "ba63891fa5f3d3e2bd21efc82a95a56772a222e13584900d6e11816f5f5a6e10",
+          "path": "artifacts/runtime-cache-artifacts/prefix-2baccfacb7deeb33348e94c0fb615a0842d6d7c4457c5d725e598e727bc8534c.qkv",
+          "payload_sha256": "5ec3ee61cce6dd898ca4778335f35bbb3db83158ea08893ff22b7b219eebecc7",
           "payload_size": 2097152
         }
       },
@@ -344,21 +353,22 @@
     },
     {
       "cache_hit": false,
-      "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+      "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 2174,
       "restore_latency_s": 0.0,
       "save": {
-        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
+        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
         "response": {
           "dry_run": true,
           "n_saved": 42,
           "n_written": 2097152
         },
         "save_latency_s": 0.0,
+        "updates_lookup": true,
         "verify": {
-          "cache_key": "a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370",
+          "cache_key": "c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2",
           "cache_scope": "prefix",
           "checks": {
             "expected_metadata_key_matches": true,
@@ -369,8 +379,8 @@
             "payload_size_matches": true
           },
           "ok": true,
-          "path": "artifacts/runtime-cache-artifacts/prefix-a503a1a85e5092d5da5f8d8f1225523d4f0db54e0384e02e8b1e490b6d645370.qkv",
-          "payload_sha256": "e8d74a3483ddee92a24cfcb6fe85beb01ed8359fa5c01b729d85385846298feb",
+          "path": "artifacts/runtime-cache-artifacts/prefix-c7a356822e8061d1f43b00ef25fc80c7dd47ea51faae18a5ab272f6fd7d463f2.qkv",
+          "payload_sha256": "2fce8e21d7b4877336429f07e0224852914603bce90e6e90a27ed0e61bf7a8b4",
           "payload_size": 2097152
         }
       },
@@ -379,21 +389,22 @@
     },
     {
       "cache_hit": true,
-      "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+      "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
       "completion_latency_s": 0.0,
       "completion_preview": "{}",
       "prompt_n": 512,
       "restore_latency_s": 0.0,
       "save": {
-        "artifact_path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
+        "artifact_path": "artifacts/runtime-cache-artifacts/session-checkpoints/continued/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
         "response": {
           "dry_run": true,
           "n_saved": 42,
           "n_written": 2097152
         },
         "save_latency_s": 0.0,
+        "updates_lookup": false,
         "verify": {
-          "cache_key": "58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b",
+          "cache_key": "045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc",
           "cache_scope": "prefix",
           "checks": {
             "expected_metadata_key_matches": true,
@@ -404,8 +415,8 @@
             "payload_size_matches": true
           },
           "ok": true,
-          "path": "artifacts/runtime-cache-artifacts/prefix-58d735688465fd067f122a671c1ea505141d8ef8f0ef289455d2472d5e73af4b.qkv",
-          "payload_sha256": "75d5b82956661a909d54014107967eabc5e53e92f4da36c63bdc519445a1d55f",
+          "path": "artifacts/runtime-cache-artifacts/session-checkpoints/continued/prefix-045a6d5bdca67be8d6be6f2f2aedcb774eed5f2f8317f6ab89e04d6646c590fc.qkv",
+          "payload_sha256": "bc4fb6296d67b6e2a86d7918db286db0a529a128c7de7d7b16027ee8d1611730",
           "payload_size": 2097152
         }
       },
@@ -416,9 +427,9 @@
   "schema": "qwen3.5-ds4-runtime-cache-manager-lab-v1",
   "slot_id": 0,
   "summary": {
-    "artifact_bytes": 4197024,
+    "artifact_bytes": 4197019,
     "artifact_count": 2,
-    "artifact_mib": 4.002593994140625,
+    "artifact_mib": 4.002589225769043,
     "cache_hits": 2,
     "cache_misses": 4,
     "disk_budget_evictions": 2,

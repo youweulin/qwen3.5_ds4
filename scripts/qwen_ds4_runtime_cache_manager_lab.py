@@ -237,25 +237,42 @@ class RuntimeCacheManager:
             "workflow_id": self.current_workflow_id,
             "hit_count": int(self.index["entries"].get(key, {}).get("hit_count", 0)),
         }
-        artifact_path = write_artifact(self.artifact_dir, metadata, payload, extra_header=extra_header)
+        updates_lookup = reason == "cold" or self.args.session_checkpoints_update_lookup
+        artifact_dir = self.artifact_dir if updates_lookup else self.artifact_dir / "session-checkpoints" / reason
+        artifact_path = write_artifact(artifact_dir, metadata, payload, extra_header=extra_header)
         verify = verify_artifact(artifact_path, metadata)
 
         entry = self.index["entries"].setdefault(key, {})
-        entry.update(
-            {
-                "cache_key": key,
-                "workflow_id": self.current_workflow_id,
-                "artifact_path": str(artifact_path),
-                "payload_size": len(payload),
-                "payload_sha256": sha256_bytes(payload),
-                "prompt_prefix_sha256": metadata.prompt_prefix_sha256,
-                "policy_sha256": metadata.policy_sha256,
-                "last_save_reason": reason,
-                "last_saved_unix": int(time.time()),
-                "last_save_latency_s": latency_s,
-                "save_count": int(entry.get("save_count", 0)) + 1,
-            }
-        )
+        common_entry = {
+            "cache_key": key,
+            "workflow_id": self.current_workflow_id,
+            "prompt_prefix_sha256": metadata.prompt_prefix_sha256,
+            "policy_sha256": metadata.policy_sha256,
+            "last_save_reason": reason,
+            "last_saved_unix": int(time.time()),
+            "last_save_latency_s": latency_s,
+            "save_count": int(entry.get("save_count", 0)) + 1,
+        }
+        if updates_lookup:
+            entry.update(
+                {
+                    **common_entry,
+                    "artifact_path": str(artifact_path),
+                    "payload_size": len(payload),
+                    "payload_sha256": sha256_bytes(payload),
+                }
+            )
+        else:
+            session_checkpoints = entry.setdefault("session_checkpoints", [])
+            if isinstance(session_checkpoints, list):
+                session_checkpoints.append(
+                    {
+                        **common_entry,
+                        "artifact_path": str(artifact_path),
+                        "payload_size": len(payload),
+                        "payload_sha256": sha256_bytes(payload),
+                    }
+                )
         entry.setdefault("created_unix", int(time.time()))
         entry.setdefault("hit_count", 0)
         self.current_dirty = False
@@ -268,10 +285,17 @@ class RuntimeCacheManager:
             artifact_path=str(artifact_path),
             save_latency_s=latency_s,
             payload_size=len(payload),
+            updates_lookup=updates_lookup,
             slot_response=response,
         )
         self.enforce_disk_budget(skip_key=key)
-        return {"artifact_path": str(artifact_path), "verify": verify, "save_latency_s": latency_s, "response": response}
+        return {
+            "artifact_path": str(artifact_path),
+            "verify": verify,
+            "save_latency_s": latency_s,
+            "updates_lookup": updates_lookup,
+            "response": response,
+        }
 
     def enforce_disk_budget(self, skip_key: str | None) -> None:
         budget_bytes = int(self.args.disk_budget_mib * 1024 * 1024)
@@ -521,6 +545,14 @@ def main() -> int:
     parser.add_argument("--run-tag", default=str(int(time.time())))
     parser.add_argument("--clean", action="store_true")
     parser.add_argument("--save-on-shutdown", action="store_true")
+    parser.add_argument(
+        "--session-checkpoints-update-lookup",
+        action="store_true",
+        help=(
+            "Allow evict/continued/shutdown saves to overwrite the lookup artifact. "
+            "Keep disabled for llama.cpp whole-slot prefix cache, because dirty session checkpoints can poison prefix hits."
+        ),
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--dry-run-payload-bytes", type=int, default=2 * 1024 * 1024)
     parser.add_argument("--model-id", default="qwen3.5:4b")

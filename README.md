@@ -839,6 +839,75 @@ miss 時 cold save
 超過磁碟預算後淘汰低價值 artifact
 ```
 
+### Runtime Manager Real llama.cpp Result
+
+真實啟動 llama-server 後，跑同一套 sequence：
+
+```text
+fb,translation,fb,rooming,translation,fb
+```
+
+本次 M1 Pro + Qwen3.5 4B + `ctx-size 32768` 實測：
+
+```text
+requests:              6
+cache_hits:            3
+cache_misses:          3
+saves_by_reason:       cold 3, evict 2, continued 1
+disk_budget_evictions: 0
+artifact_count:        3
+artifact_mib:          448.97
+```
+
+每個 request：
+
+```text
+fb cold:
+  prompt_n:    3150
+  completion:  9.117s
+
+translation cold:
+  prompt_n:    3148
+  completion:  9.035s
+
+fb disk restore:
+  restore:     0.020s
+  prompt_n:    509
+  completion:  2.018s
+
+rooming cold:
+  prompt_n:    3193
+  completion:  9.200s
+
+translation disk restore:
+  restore:     0.023s
+  prompt_n:    468
+  completion:  1.937s
+
+fb disk restore:
+  restore:     0.022s
+  prompt_n:    464
+  completion:  1.923s
+```
+
+完整 trace：
+
+```text
+traces/runtime-cache-manager-lab-real-2026-05-15.json
+```
+
+這次也抓到一個重要限制：llama.cpp whole-slot checkpoint 不是 DS4 那種乾淨 prefix payload。  
+如果把 `evict` 或 `continued` checkpoint 覆蓋成正式 lookup artifact，可能會把已生成的尾巴一起存進去，讓下一次 prefix hit 變成假命中。
+
+所以目前 manager 的安全做法是：
+
+```text
+cold save -> 正式 prefix lookup artifact
+evict / continued / shutdown save -> session-checkpoints/，預設不覆蓋 prefix lookup artifact
+```
+
+這讓 runtime 仍保留 DS4-style event policy，但避免污染 prefix cache。
+
 ### 和 DS4 的差異
 
 DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。  
