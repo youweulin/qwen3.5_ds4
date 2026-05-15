@@ -1027,6 +1027,143 @@ prefix-only 不會降低 active KV buffer 的預配置大小，但它讓可重�
 才能知道哪些 block 是固定 SOP，哪些 block 是動態 tail
 ```
 
+## Block Boundary Lab
+
+prefix-only 之後，下一步是先把 prefix artifact 拆成「可管理的 block 索引」，但還不碰 C++ runtime。
+
+新增：
+
+```text
+scripts/qwen_block_boundary_lab.py
+```
+
+這一步驗證 block-level KV cache 的安全規則：
+
+```text
+1. 對 prefix text 做 deterministic pseudo-tokenization
+2. 以 512 tokens 切 block
+3. 每個 block 建 metadata：
+   - model hash
+   - tokenizer hash
+   - RoPE settings hash
+   - quant
+   - full prefix sha256
+   - block index
+   - token range
+   - previous block hash
+4. 產生 manifest
+5. 測試 tail / middle edit / model / tokenizer / RoPE / disk eviction
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_block_boundary_lab.py \
+  --clean \
+  --block-size-tokens 512 \
+  --run-tag block-boundary-2026-05-15 \
+  --trace-json traces/block-boundary-lab-2026-05-15.json
+```
+
+### Block Boundary Result
+
+本次 FB content SOP prefix：
+
+```text
+approx_token_count: 4450
+block_size_tokens: 512
+block_count:       9
+manifest_key:      56ce49efff5a5bec571954dbd98f3edb7ab80a9085e70aab89a2bfb8acaf3ddd
+```
+
+測試結果：
+
+```text
+tail_change_keeps_prefix_blocks:          PASS
+middle_edit_invalidates_from_mutated_block: PASS
+model_change_invalidates_all_blocks:      PASS
+tokenizer_change_invalidates_all_blocks:  PASS
+rope_change_invalidates_all_blocks:       PASS
+disk_budget_evicts_whole_blocks_only:     PASS
+```
+
+中間改動測試：
+
+```text
+mutated_token_index:   2225
+mutation_block_index:  4
+changed_block_indexes: [4, 5, 6, 7, 8]
+```
+
+這代表：
+
+```text
+block 0-3 可以安全保留
+block 4 是被修改的 block
+block 5-8 因 previous_block_hash chain 跟著失效
+```
+
+disk budget 測試：
+
+```text
+budget_bytes:      162538
+remaining_bytes:   131344
+evicted_indexes:   [6, 3, 0, 7, 4]
+remaining_indexes: [1, 2, 5, 8]
+```
+
+淘汰規則確認：
+
+```text
+只刪完整 block artifact
+不截斷 block 檔案
+manifest 只能指向仍存在的完整 blocks
+```
+
+完整 trace：
+
+```text
+traces/block-boundary-lab-2026-05-15.json
+```
+
+### Block Key Rule
+
+這裡有一個重要設計點：
+
+```text
+full prefix sha256 放在 manifest / header
+但不放進 reusable block key
+```
+
+原因是，如果完整 prefix sha 直接進每個 block key，那 prefix 中間改一個字會讓所有 block 都失效，連改動前的 block 也無法重用。
+
+目前 block key 使用：
+
+```text
+runtime identity
+tokenizer mode
+block size
+block text sha256
+previous block hash
+block index / token range
+```
+
+manifest 則負責整體驗證：
+
+```text
+full prefix sha256
+block key list
+runtime identity
+```
+
+這樣才能同時做到：
+
+```text
+局部復用
+向後失效傳播
+整體 manifest 驗證
+```
+
 ### 和 DS4 的差異
 
 DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。  

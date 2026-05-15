@@ -1,0 +1,494 @@
+{
+  "base_manifest": {
+    "approx_token_count": 4450,
+    "block_count": 9,
+    "block_size_tokens": 512,
+    "blocks": [
+      {
+        "approx_tokens": 512,
+        "block_key": "f08fd69fb61cc02f444bbf4e6c9da98c3e1dcad72e4d5b6404bcb6f1fe782d8f",
+        "byte_length": 1405,
+        "metadata": {
+          "block_index": 0,
+          "block_size_tokens": 512,
+          "block_text_sha256": "703b6eaa89822ed0fb0bbceb7bae27488faf912c8096199c8dd1b6cbb7c5c877",
+          "char_end": 719,
+          "char_start": 0,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "root:5de16d700f4201d978850d3a2607d1a14b67e8a125d6c9148b5f5a30c1b03fbc",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 512,
+          "token_start": 0,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "WORKFLOW_POLICY_BENCH_RUN=block-boundary-2026-05-15-block-boundary-fb\nWORKFLOW_ID=fb\nWORKFLOW_TITLE=FB content SOP\n目的：測速"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "d10ffa82c9df3d3f12b1831f2c3be751bd6c6cec3db5ac2d034cd3947b5ad630",
+        "byte_length": 1461,
+        "metadata": {
+          "block_index": 1,
+          "block_size_tokens": 512,
+          "block_text_sha256": "4a34c6d610087fa15c11a731527215d73c9b3da814839c5c7c891ac8e02cf501",
+          "char_end": 1404,
+          "char_start": 719,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "f08fd69fb61cc02f444bbf4e6c9da98c3e1dcad72e4d5b6404bcb6f1fe782d8f",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 1024,
+          "token_start": 512,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #005：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #006：沿用上述 SOP。遇到"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "bc8b860b85495d8882fa4051ba05d34a1bece2494ea0d08ba4bd8f90d58d3af4",
+        "byte_length": 1461,
+        "metadata": {
+          "block_index": 2,
+          "block_size_tokens": 512,
+          "block_text_sha256": "5c7b842edb5b630e868fc9d0a6315811dcc57e7472fb3e1adcb53be535525bbc",
+          "char_end": 2093,
+          "char_start": 1404,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "d10ffa82c9df3d3f12b1831f2c3be751bd6c6cec3db5ac2d034cd3947b5ad630",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 1536,
+          "token_start": 1024,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "s_review，不要自行補資料。\n\n延伸規則 #017：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #018：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "1b062a43eb6a06ac85d43d9bcff2d5cf97e9aa52e8105219a1368c4fb5b05b83",
+        "byte_length": 1460,
+        "metadata": {
+          "block_index": 3,
+          "block_size_tokens": 512,
+          "block_text_sha256": "3790e8484619a10c4fd98a2c61f2042a92e1804074db3d97f6f186473b451d5a",
+          "char_end": 2775,
+          "char_start": 2093,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "bc8b860b85495d8882fa4051ba05d34a1bece2494ea0d08ba4bd8f90d58d3af4",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 2048,
+          "token_start": 1536,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #030：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #031：沿用上述 SOP。遇"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "8688a77558686ac0ab8614117c3ce0a14d8810a07cfc6f99b93955d3d5c30334",
+        "byte_length": 1462,
+        "metadata": {
+          "block_index": 4,
+          "block_size_tokens": 512,
+          "block_text_sha256": "d5cfffaabe81874591937b4691165a7c36eb7069f7f7fcf38e675a54d71530ce",
+          "char_end": 3467,
+          "char_start": 2775,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "1b062a43eb6a06ac85d43d9bcff2d5cf97e9aa52e8105219a1368c4fb5b05b83",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 2560,
+          "token_start": 2048,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "needs_review，不要自行補資料。\n\n延伸規則 #042：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #043：沿用上述 SOP。遇到不確定資訊時，要標示 needs_revi"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "1c2d5b88ce0f7f3827d4e4176dae20b55861b1c03f8a8eae8245ba592bb6ae3b",
+        "byte_length": 1462,
+        "metadata": {
+          "block_index": 5,
+          "block_size_tokens": 512,
+          "block_text_sha256": "d91fc39214754d8ed1ea41b620562a275004de7ba314dfa0d2b41e202da7fc67",
+          "char_end": 4149,
+          "char_start": 3467,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "8688a77558686ac0ab8614117c3ce0a14d8810a07cfc6f99b93955d3d5c30334",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 3072,
+          "token_start": 2560,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #055：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #056：沿用上述 SOP。"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "99f54dbc385faf98b3c5392570bc2e540084067f3a9bb7045c2c91bbd22eb6cc",
+        "byte_length": 1460,
+        "metadata": {
+          "block_index": 6,
+          "block_size_tokens": 512,
+          "block_text_sha256": "e7bea415258be4236ea712c7d06434372f9485f287f819f4904c20a27e424c82",
+          "char_end": 4839,
+          "char_start": 4149,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "1c2d5b88ce0f7f3827d4e4176dae20b55861b1c03f8a8eae8245ba592bb6ae3b",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 3584,
+          "token_start": 3072,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": " needs_review，不要自行補資料。\n\n延伸規則 #067：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #068：沿用上述 SOP。遇到不確定資訊時，要標示 needs_rev"
+      },
+      {
+        "approx_tokens": 512,
+        "block_key": "1e307b9f8bef2017c98aa5cb6edf9519a13ed8c4d6bf0a97436056a5fed00c8b",
+        "byte_length": 1462,
+        "metadata": {
+          "block_index": 7,
+          "block_size_tokens": 512,
+          "block_text_sha256": "10316f036adef7a32e0894588a7dfd161f8ed03585d296d7475e3199eed76d29",
+          "char_end": 5523,
+          "char_start": 4839,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "99f54dbc385faf98b3c5392570bc2e540084067f3a9bb7045c2c91bbd22eb6cc",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 4096,
+          "token_start": 3584,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "079：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #080：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #081：沿用上述 S"
+      },
+      {
+        "approx_tokens": 354,
+        "block_key": "179e37bc7619ae5ef11611e1d87c36d5d5982d58e70b965e7812bee90e8d4a7e",
+        "byte_length": 1009,
+        "metadata": {
+          "block_index": 8,
+          "block_size_tokens": 512,
+          "block_text_sha256": "17c965bf6bd08573e93afecee0fb33d14398ac7e3459b12aeac98a96fed5f6d8",
+          "char_end": 6002,
+          "char_start": 5523,
+          "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+          "previous_block_hash": "1e307b9f8bef2017c98aa5cb6edf9519a13ed8c4d6bf0a97436056a5fed00c8b",
+          "runtime": {
+            "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+            "context_size": 32768,
+            "kv_cache_format_version": "llama.cpp-slot-save-v1",
+            "model_id": "qwen3.5:4b",
+            "model_sha256": "local-model-sha256-not-provided",
+            "quant_type": "Q4_K_M",
+            "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+            "runtime_name": "llama.cpp",
+            "runtime_version": "llama.cpp-local-build",
+            "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+          },
+          "schema_version": "1",
+          "token_end": 4450,
+          "token_start": 4096,
+          "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+        },
+        "text_preview": "示 needs_review，不要自行補資料。\n\n延伸規則 #092：沿用上述 SOP。遇到不確定資訊時，要標示 needs_review，不要自行補資料。\n\n延伸規則 #093：沿用上述 SOP。遇到不確定資訊時，要標示 needs_re"
+      }
+    ],
+    "identity": {
+      "chat_template_sha256": "1e53ec5bf20c1dc9cea38577f9081373e97694037ff51ab6efb47721d8ea76b0",
+      "context_size": 32768,
+      "kv_cache_format_version": "llama.cpp-slot-save-v1",
+      "model_id": "qwen3.5:4b",
+      "model_sha256": "local-model-sha256-not-provided",
+      "quant_type": "Q4_K_M",
+      "rope_settings_sha256": "b09561f25edb507f48c4e8bd01f3cea787c5099c22c3739e2b7eabb5496f3a5f",
+      "runtime_name": "llama.cpp",
+      "runtime_version": "llama.cpp-local-build",
+      "tokenizer_sha256": "qwen35-tokenizer-sha256-not-provided"
+    },
+    "manifest_key": "56ce49efff5a5bec571954dbd98f3edb7ab80a9085e70aab89a2bfb8acaf3ddd",
+    "prefix_sha256": "ba11e51d524a7afe4aad7291fbc70c1c6cf4b61b8241962fd3476f9bb124aa72",
+    "schema": "qwen3.5-ds4-block-manifest-v1",
+    "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+  },
+  "eviction": {
+    "budget_bytes": 162538,
+    "evicted": [
+      {
+        "block_index": 6,
+        "block_key": "99f54dbc385faf98b3c5392570bc2e540084067f3a9bb7045c2c91bbd22eb6cc",
+        "evicted_size": 32870,
+        "expected_size": 32870,
+        "hit_count": 0,
+        "path": "artifacts/block-boundary-lab/blocks/block-0006-99f54dbc385faf98b3c5392570bc2e540084067f3a9bb7045c2c91bbd22eb6cc.qkb"
+      },
+      {
+        "block_index": 3,
+        "block_key": "1b062a43eb6a06ac85d43d9bcff2d5cf97e9aa52e8105219a1368c4fb5b05b83",
+        "evicted_size": 32819,
+        "expected_size": 32819,
+        "hit_count": 0,
+        "path": "artifacts/block-boundary-lab/blocks/block-0003-1b062a43eb6a06ac85d43d9bcff2d5cf97e9aa52e8105219a1368c4fb5b05b83.qkb"
+      },
+      {
+        "block_index": 0,
+        "block_key": "f08fd69fb61cc02f444bbf4e6c9da98c3e1dcad72e4d5b6404bcb6f1fe782d8f",
+        "evicted_size": 32768,
+        "expected_size": 32768,
+        "hit_count": 0,
+        "path": "artifacts/block-boundary-lab/blocks/block-0000-f08fd69fb61cc02f444bbf4e6c9da98c3e1dcad72e4d5b6404bcb6f1fe782d8f.qkb"
+      },
+      {
+        "block_index": 7,
+        "block_key": "1e307b9f8bef2017c98aa5cb6edf9519a13ed8c4d6bf0a97436056a5fed00c8b",
+        "evicted_size": 32887,
+        "expected_size": 32887,
+        "hit_count": 1,
+        "path": "artifacts/block-boundary-lab/blocks/block-0007-1e307b9f8bef2017c98aa5cb6edf9519a13ed8c4d6bf0a97436056a5fed00c8b.qkb"
+      },
+      {
+        "block_index": 4,
+        "block_key": "8688a77558686ac0ab8614117c3ce0a14d8810a07cfc6f99b93955d3d5c30334",
+        "evicted_size": 32836,
+        "expected_size": 32836,
+        "hit_count": 1,
+        "path": "artifacts/block-boundary-lab/blocks/block-0004-8688a77558686ac0ab8614117c3ce0a14d8810a07cfc6f99b93955d3d5c30334.qkb"
+      }
+    ],
+    "partial_files": [],
+    "remaining": [
+      {
+        "block_index": 1,
+        "block_key": "d10ffa82c9df3d3f12b1831f2c3be751bd6c6cec3db5ac2d034cd3947b5ad630",
+        "expected_size": 32785,
+        "hit_count": 1,
+        "path": "artifacts/block-boundary-lab/blocks/block-0001-d10ffa82c9df3d3f12b1831f2c3be751bd6c6cec3db5ac2d034cd3947b5ad630.qkb"
+      },
+      {
+        "block_index": 2,
+        "block_key": "bc8b860b85495d8882fa4051ba05d34a1bece2494ea0d08ba4bd8f90d58d3af4",
+        "expected_size": 32802,
+        "hit_count": 2,
+        "path": "artifacts/block-boundary-lab/blocks/block-0002-bc8b860b85495d8882fa4051ba05d34a1bece2494ea0d08ba4bd8f90d58d3af4.qkb"
+      },
+      {
+        "block_index": 5,
+        "block_key": "1c2d5b88ce0f7f3827d4e4176dae20b55861b1c03f8a8eae8245ba592bb6ae3b",
+        "expected_size": 32853,
+        "hit_count": 2,
+        "path": "artifacts/block-boundary-lab/blocks/block-0005-1c2d5b88ce0f7f3827d4e4176dae20b55861b1c03f8a8eae8245ba592bb6ae3b.qkb"
+      },
+      {
+        "block_index": 8,
+        "block_key": "179e37bc7619ae5ef11611e1d87c36d5d5982d58e70b965e7812bee90e8d4a7e",
+        "expected_size": 32904,
+        "hit_count": 2,
+        "path": "artifacts/block-boundary-lab/blocks/block-0008-179e37bc7619ae5ef11611e1d87c36d5d5982d58e70b965e7812bee90e8d4a7e.qkb"
+      }
+    ],
+    "remaining_bytes": 131344
+  },
+  "mutation": {
+    "changed_block_indexes": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "mutated_token_index": 2225,
+    "mutation_block_index": 4
+  },
+  "policy": {
+    "block_size_tokens": 512,
+    "disk_budget_ratio": 0.55,
+    "prefix_chars": 6000,
+    "synthetic_block_bytes": 32768,
+    "tokenizer_mode": "pseudo-cjk-char-ascii-4char-v1"
+  },
+  "schema": "qwen3.5-ds4-block-boundary-lab-v1",
+  "summary": {
+    "approx_token_count": 4450,
+    "block_count": 9,
+    "manifest_key": "56ce49efff5a5bec571954dbd98f3edb7ab80a9085e70aab89a2bfb8acaf3ddd",
+    "ok": true,
+    "test_passed": 6,
+    "test_total": 6
+  },
+  "tests": [
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {
+        "tail_request_sha256": "d6695224e68dc392ba2361f9539630c9eb43290549abade9198af23e08d8c174"
+      },
+      "name": "tail_change_keeps_prefix_blocks",
+      "note": "Dynamic tail is excluded from prefix block manifest.",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {
+        "changed_block_indexes": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "mutated_token_index": 2225,
+        "mutation_block_index": 4
+      },
+      "name": "middle_edit_invalidates_from_mutated_block",
+      "note": "A middle prefix edit keeps earlier blocks and invalidates the changed block plus every later block through previous_block_hash.",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {},
+      "name": "model_change_invalidates_all_blocks",
+      "note": "Model hash is part of every block key.",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {},
+      "name": "tokenizer_change_invalidates_all_blocks",
+      "note": "Tokenizer hash is part of every block key.",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {},
+      "name": "rope_change_invalidates_all_blocks",
+      "note": "RoPE settings hash is part of every block key.",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "expected": true,
+      "extra": {
+        "budget_bytes": 162538,
+        "evicted_indexes": [
+          6,
+          3,
+          0,
+          7,
+          4
+        ],
+        "remaining_bytes": 131344,
+        "remaining_indexes": [
+          1,
+          2,
+          5,
+          8
+        ]
+      },
+      "name": "disk_budget_evicts_whole_blocks_only",
+      "note": "Eviction removes complete block artifact files; it never truncates a block.",
+      "pass": true
+    }
+  ],
+  "variant_manifests": {
+    "model_changed_manifest_key": "ab9fef7a1af329569b98d64325f4b8ed506cc0e99c23955b091adb035aed65e1",
+    "mutated_manifest_key": "8a93f307338234bacd647c9a4f3d9a51fafe1a2670327e0ea69402362a2cd550",
+    "rope_changed_manifest_key": "cc39455d4ed0714bc00ae0f83b66be5dfb03683df6209b46c0c9127761b0d933",
+    "same_tail_manifest_key": "56ce49efff5a5bec571954dbd98f3edb7ab80a9085e70aab89a2bfb8acaf3ddd",
+    "tokenizer_changed_manifest_key": "0571aa8d4342e755858adc933bc08da6417b50198f49fac6f92cf234af858558"
+  },
+  "workflow": "fb"
+}
