@@ -1,0 +1,29 @@
+{
+  "artifact_dir": "artifacts/kv-artifact-perf",
+  "rows": [
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/67108864-bytes/round-0/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 67108864,
+      "payload_gen_s": 1.1103114590005134,
+      "payload_mib": 64.0,
+      "round": 0,
+      "verify_mib_s": 1491.7284822465278,
+      "verify_s": 0.0429032499960158,
+      "write_mib_s": 855.6960013168645,
+      "write_s": 0.07479291699564783
+    }
+  ],
+  "schema": "qwen3.5-ds4-kv-artifact-perf-v1",
+  "summary": {
+    "67108864": {
+      "payload_gen_avg_s": 1.1103114590005134,
+      "payload_mib": 64.0,
+      "rounds": 1,
+      "verify_avg_s": 0.0429032499960158,
+      "verify_mib_s_avg": 1491.7284822465278,
+      "write_avg_s": 0.07479291699564783,
+      "write_mib_s_avg": 855.6960013168645
+    }
+  }
+}

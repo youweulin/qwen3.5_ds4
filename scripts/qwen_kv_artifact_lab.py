@@ -169,12 +169,12 @@ def make_prefix_metadata(prefix_chars: int, steering_state: str = "none") -> Cac
 
 def synthetic_kv_payload(metadata: CacheMetadata, size: int) -> bytes:
     seed = canonical_json(asdict(metadata)).encode("utf-8")
-    chunks: list[bytes] = []
+    payload = bytearray()
     counter = 0
-    while sum(len(chunk) for chunk in chunks) < size:
-        chunks.append(sha256_bytes(seed + str(counter).encode("ascii")).encode("ascii"))
+    while len(payload) < size:
+        payload.extend(sha256_bytes(seed + str(counter).encode("ascii")).encode("ascii"))
         counter += 1
-    return b"".join(chunks)[:size]
+    return bytes(payload[:size])
 
 
 def write_tampered_header(path: Path, target: Path) -> None:

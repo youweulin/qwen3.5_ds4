@@ -380,6 +380,78 @@ traces/kv-artifact-lab-2026-05-15.json
 
 下一步才是把 synthetic payload 換成真正 runtime 存下來的 KV bytes。
 
+### KV Artifact Performance
+
+為了確認這層外殼本身不會變成瓶頸，另外加入：
+
+```text
+scripts/qwen_kv_artifact_perf_lab.py
+```
+
+測試項目：
+
+```text
+1. synthetic KV payload generation
+2. header/key/digest creation
+3. file write
+4. file read + header verification + payload sha256
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_kv_artifact_perf_lab.py \
+  --clean \
+  --sizes 4kb,1mb,16mb \
+  --rounds 3 \
+  --trace-json traces/kv-artifact-perf-2026-05-15.json
+```
+
+本次結果：
+
+```text
+4KB:
+  write_avg_s: 0.000s
+  verify_avg_s: 0.000s
+
+1MB:
+  write_avg_s: 0.001s
+  verify_avg_s: 0.001s
+  write_mib_s: 1039.343
+  verify_mib_s: 1059.278
+
+16MB:
+  write_avg_s: 0.014s
+  verify_avg_s: 0.011s
+  write_mib_s: 1250.678
+  verify_mib_s: 1448.827
+```
+
+再補一個 64MB 單輪：
+
+```text
+64MB:
+  write_avg_s: 0.075s
+  verify_avg_s: 0.043s
+  write_mib_s: 855.696
+  verify_mib_s: 1491.728
+```
+
+Trace files:
+
+```text
+traces/kv-artifact-perf-2026-05-15.json
+traces/kv-artifact-perf-64mb-2026-05-15.json
+```
+
+判讀：
+
+```text
+這階段實裝的安全外殼成本很低。
+對 16MB / 64MB 等級 payload，write + verify 都是毫秒到數十毫秒級。
+未來真正瓶頸更可能是 runtime KV serialization / deserialization，而不是 header/hash/filename 驗證。
+```
+
 ## Translation Workload Benchmark
 
 第一階段 smoke test 證明固定 prefix 會命中，但真正落地時更重要的是：

@@ -1,0 +1,143 @@
+{
+  "artifact_dir": "artifacts/kv-artifact-perf",
+  "rows": [
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/4096-bytes/round-0/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 4096,
+      "payload_gen_s": 0.00010900000052060932,
+      "payload_mib": 0.00390625,
+      "round": 0,
+      "verify_mib_s": 28.20397120191728,
+      "verify_s": 0.0001384999995934777,
+      "write_mib_s": 17.29707360121548,
+      "write_s": 0.00022583299869438633
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/4096-bytes/round-1/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 4096,
+      "payload_gen_s": 9.616700117476285e-05,
+      "payload_mib": 0.00390625,
+      "round": 1,
+      "verify_mib_s": 42.671672136630505,
+      "verify_s": 9.154199506156147e-05,
+      "write_mib_s": 16.98059524243667,
+      "write_s": 0.00023004199465503916
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/4096-bytes/round-2/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 4096,
+      "payload_gen_s": 9.145799413090572e-05,
+      "payload_mib": 0.00390625,
+      "round": 2,
+      "verify_mib_s": 49.10927217560649,
+      "verify_s": 7.954200555104762e-05,
+      "write_mib_s": 20.704468747728274,
+      "write_s": 0.000188666999747511
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/1048576-bytes/round-0/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 1048576,
+      "payload_gen_s": 0.017268584000703413,
+      "payload_mib": 1.0,
+      "round": 0,
+      "verify_mib_s": 1052.0313730942628,
+      "verify_s": 0.0009505419948254712,
+      "write_mib_s": 769.6748136783635,
+      "write_s": 0.0012992499978281558
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/1048576-bytes/round-1/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 1048576,
+      "payload_gen_s": 0.017336625001917128,
+      "payload_mib": 1.0,
+      "round": 1,
+      "verify_mib_s": 959.9619110140243,
+      "verify_s": 0.0010417079975013621,
+      "write_mib_s": 1264.4894674328,
+      "write_s": 0.0007908330007921904
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/1048576-bytes/round-2/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 1048576,
+      "payload_gen_s": 0.01712470799975563,
+      "payload_mib": 1.0,
+      "round": 2,
+      "verify_mib_s": 1165.8408660906375,
+      "verify_s": 0.0008577499975217506,
+      "write_mib_s": 1083.8639788927555,
+      "write_s": 0.0009226249967468902
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/16777216-bytes/round-0/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 16777216,
+      "payload_gen_s": 0.2757193750003353,
+      "payload_mib": 16.0,
+      "round": 0,
+      "verify_mib_s": 1437.6906233563043,
+      "verify_s": 0.011128958998597227,
+      "write_mib_s": 1582.558934385661,
+      "write_s": 0.01011020800069673
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/16777216-bytes/round-1/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 16777216,
+      "payload_gen_s": 0.2556238749966724,
+      "payload_mib": 16.0,
+      "round": 1,
+      "verify_mib_s": 1459.8263092410054,
+      "verify_s": 0.010960208004689775,
+      "write_mib_s": 1312.9102483895497,
+      "write_s": 0.012186667001515161
+    },
+    {
+      "cache_key": "a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e",
+      "path": "artifacts/kv-artifact-perf/16777216-bytes/round-2/prefix-a46b7154c91bf821cd009e651c4c1fb03d20bc37b71fc88db8f578214d75f93e.qkv",
+      "payload_bytes": 16777216,
+      "payload_gen_s": 0.25750349999725586,
+      "payload_mib": 16.0,
+      "round": 2,
+      "verify_mib_s": 1448.9636512407758,
+      "verify_s": 0.011042375001125038,
+      "write_mib_s": 856.563514317647,
+      "write_s": 0.01867929199943319
+    }
+  ],
+  "schema": "qwen3.5-ds4-kv-artifact-perf-v1",
+  "summary": {
+    "1048576": {
+      "payload_gen_avg_s": 0.017243305667458724,
+      "payload_mib": 1.0,
+      "rounds": 3,
+      "verify_avg_s": 0.0009499999966161946,
+      "verify_mib_s_avg": 1059.2780500663082,
+      "write_avg_s": 0.0010042359984557454,
+      "write_mib_s_avg": 1039.3427533346396
+    },
+    "16777216": {
+      "payload_gen_avg_s": 0.2629489166647545,
+      "payload_mib": 16.0,
+      "rounds": 3,
+      "verify_avg_s": 0.011043847334804013,
+      "verify_mib_s_avg": 1448.8268612793618,
+      "write_avg_s": 0.013658722333881693,
+      "write_mib_s_avg": 1250.6775656976192
+    },
+    "4096": {
+      "payload_gen_avg_s": 9.88749986087593e-05,
+      "payload_mib": 0.00390625,
+      "rounds": 3,
+      "verify_avg_s": 0.00010319466673536226,
+      "verify_mib_s_avg": 39.99497183805143,
+      "write_avg_s": 0.00021484733103231216,
+      "write_mib_s_avg": 18.32737919712681
+    }
+  }
+}
