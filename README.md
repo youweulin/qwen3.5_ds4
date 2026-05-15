@@ -908,6 +908,125 @@ evict / continued / shutdown save -> session-checkpoints/，預設不覆蓋 pref
 
 這讓 runtime 仍保留 DS4-style event policy，但避免污染 prefix cache。
 
+### Prefix-only Cold Save
+
+下一步把 cold save 改成真正的 prefix-only 流程：
+
+```text
+cold miss:
+  1. 只送固定 prefix，n_predict=0，讓 llama.cpp prefill KV
+  2. 立刻 save artifact，header 標記 payload_scope=prefix-only
+  3. 再送完整 prompt，也就是 prefix + 當次 user task
+
+cache hit:
+  1. restore prefix-only artifact
+  2. 只計算新的 user task tail
+```
+
+重跑 dry-run：
+
+```sh
+python3 scripts/qwen_ds4_runtime_cache_manager_lab.py \
+  --dry-run \
+  --clean \
+  --disk-budget-mib 5 \
+  --dry-run-payload-bytes 2097152 \
+  --trace-json traces/runtime-cache-manager-prefix-only-dryrun-2026-05-15.json
+```
+
+接真實 llama-server：
+
+```sh
+python3 scripts/qwen_ds4_runtime_cache_manager_lab.py \
+  --clean \
+  --slot-save-path "$PWD/artifacts/runtime-cache-prefix-only-slots/" \
+  --artifact-dir artifacts/runtime-cache-prefix-only-artifacts-real \
+  --trace-json traces/runtime-cache-manager-prefix-only-real-2026-05-15.json \
+  --sequence fb,translation,fb,rooming,translation,fb \
+  --disk-budget-mib 1024 \
+  --prefix-chars 6000 \
+  --n-predict 16 \
+  --prefix-prefill-n-predict 0
+```
+
+本次 M1 Pro + Qwen3.5 4B + `ctx-size 32768` 實測：
+
+```text
+requests:              6
+cache_hits:            3
+cache_misses:          3
+saves_by_reason:       cold 3, evict 5, continued 1
+disk_budget_evictions: 0
+artifact_count:        3
+artifact_mib:          438.00
+```
+
+每個 request：
+
+```text
+fb cold:
+  prefix_prefill: 8.314s
+  prefix_prompt_n: 3066
+  tail prompt_n: 84
+  tail completion: 0.883s
+
+translation cold:
+  prefix_prefill: 8.326s
+  prefix_prompt_n: 3056
+  tail prompt_n: 92
+  tail completion: 0.884s
+
+fb disk restore:
+  restore: 0.019s
+  prompt_n: 75
+  completion: 0.872s
+
+rooming cold:
+  prefix_prefill: 8.286s
+  prefix_prompt_n: 3063
+  tail prompt_n: 130
+  tail completion: 0.970s
+
+translation disk restore:
+  restore: 0.019s
+  prompt_n: 89
+  completion: 0.906s
+
+fb disk restore:
+  restore: 0.019s
+  prompt_n: 75
+  completion: 0.878s
+```
+
+完整 trace：
+
+```text
+traces/runtime-cache-manager-prefix-only-dryrun-2026-05-15.json
+traces/runtime-cache-manager-prefix-only-real-2026-05-15.json
+```
+
+判讀：
+
+```text
+舊版 real manager hit:
+  prompt_n 約 464-509
+  completion 約 1.9-2.0s
+
+prefix-only hit:
+  prompt_n 約 75-89
+  completion 約 0.87-0.91s
+```
+
+prefix-only 不會降低 active KV buffer 的預配置大小，但它讓可重用 artifact 只代表固定 SOP / skill prefix，不再把 user task、工具結果、AI output 一起存進正式 lookup cache。
+
+這是進 block-level KV 之前必要的一刀：
+
+```text
+先有乾淨 prefix boundary
+才能安全切 block
+才能知道哪些 block 是固定 SOP，哪些 block 是動態 tail
+```
+
 ### 和 DS4 的差異
 
 DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 KV rows、frontier、token IDs、logits 等。  
@@ -916,8 +1035,8 @@ DS4 的 payload 是它自己的 DeepSeek V4 Flash session state，包含壓縮 K
 所以目前還有兩個限制：
 
 ```text
-1. artifact 是 whole slot，不是乾淨的 prefix-only KV slice。
-2. restore 後仍依賴 llama.cpp cache_prompt 去對齊共同 prefix。
+1. artifact payload 仍是 llama.cpp whole slot state format，不是 DS4 那種自訂壓縮 KV rows。
+2. prefix-only 是在 manager 層控制儲存時機，還不是 runtime 內部的 block-level KV paging。
 ```
 
 但這已經足夠先驗證產品政策：

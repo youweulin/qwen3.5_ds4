@@ -222,7 +222,7 @@ class RuntimeCacheManager:
         )
         return {"cache_hit": restored, "restore_latency_s": latency_s, "restore_response": response}
 
-    def save_current(self, reason: str) -> dict[str, Any] | None:
+    def save_current(self, reason: str, *, payload_scope: str = "session") -> dict[str, Any] | None:
         if self.current_metadata is None or self.current_key is None:
             return None
         metadata = self.current_metadata
@@ -234,6 +234,7 @@ class RuntimeCacheManager:
         extra_header = {
             "manager_schema": "qwen3.5-ds4-runtime-cache-manager-v1",
             "save_reason": reason,
+            "payload_scope": payload_scope,
             "workflow_id": self.current_workflow_id,
             "hit_count": int(self.index["entries"].get(key, {}).get("hit_count", 0)),
         }
@@ -249,6 +250,7 @@ class RuntimeCacheManager:
             "prompt_prefix_sha256": metadata.prompt_prefix_sha256,
             "policy_sha256": metadata.policy_sha256,
             "last_save_reason": reason,
+            "last_payload_scope": payload_scope,
             "last_saved_unix": int(time.time()),
             "last_save_latency_s": latency_s,
             "save_count": int(entry.get("save_count", 0)) + 1,
@@ -285,6 +287,7 @@ class RuntimeCacheManager:
             artifact_path=str(artifact_path),
             save_latency_s=latency_s,
             payload_size=len(payload),
+            payload_scope=payload_scope,
             updates_lookup=updates_lookup,
             slot_response=response,
         )
@@ -368,21 +371,49 @@ class RuntimeCacheManager:
         self.record_event("cold_miss", cache_key=key, workflow_id=workflow_id, artifact_path=str(self.artifact_path(metadata)))
         return {"source": "cold", "cache_hit": False, "restore_latency_s": 0.0}
 
-    def run_request(self, workflow: Workflow, metadata: CacheMetadata, prompt: str, request_index: int) -> dict[str, Any]:
+    def run_request(
+        self,
+        workflow: Workflow,
+        metadata: CacheMetadata,
+        prefix_prompt: str,
+        prompt: str,
+        request_index: int,
+    ) -> dict[str, Any]:
         switch = self.switch_to(workflow.workflow_id, metadata)
+        prefix_prefill = None
+        save = None
+        if (
+            switch["source"] == "cold"
+            and self.args.prefix_only_cold_save
+            and len(prefix_prompt) >= self.args.min_cache_chars
+        ):
+            prefix_response, prefix_latency_s = self.runtime.completion(prefix_prompt, self.args.prefix_prefill_n_predict)
+            prefix_prompt_n = timings_prompt_n(prefix_response)
+            self.current_dirty = True
+            save = self.save_current("cold", payload_scope="prefix-only")
+            prefix_prefill = {
+                "latency_s": prefix_latency_s,
+                "prompt_n": prefix_prompt_n,
+                "n_predict": self.args.prefix_prefill_n_predict,
+                "completion_preview": str(prefix_response.get("content", ""))[:120],
+            }
+
         response, latency_s = self.runtime.completion(prompt, self.args.n_predict)
         prompt_n = timings_prompt_n(response)
         self.current_dirty = True
         key = self.key_for(metadata)
 
-        save = None
-        if switch["source"] == "cold" and len(prompt) >= self.args.min_cache_chars:
-            save = self.save_current("cold")
+        if (
+            switch["source"] == "cold"
+            and not self.args.prefix_only_cold_save
+            and len(prompt) >= self.args.min_cache_chars
+        ):
+            save = self.save_current("cold", payload_scope="full-prompt")
         elif switch["source"] in {"disk", "live"} and self.args.continued_interval_requests > 0:
             entry = self.index["entries"].get(key, {})
             hits = int(entry.get("hit_count", 0))
             if hits > 0 and hits % self.args.continued_interval_requests == 0:
-                save = self.save_current("continued")
+                save = self.save_current("continued", payload_scope="session")
 
         self.record_event(
             "completion",
@@ -391,6 +422,7 @@ class RuntimeCacheManager:
             request_index=request_index,
             source=switch["source"],
             completion_latency_s=latency_s,
+            prefix_prefill_latency_s=prefix_prefill["latency_s"] if prefix_prefill else None,
             prompt_n=prompt_n,
         )
         return {
@@ -399,6 +431,7 @@ class RuntimeCacheManager:
             "source": switch["source"],
             "cache_hit": bool(switch["cache_hit"]),
             "restore_latency_s": switch["restore_latency_s"],
+            "prefix_prefill": prefix_prefill,
             "completion_latency_s": latency_s,
             "prompt_n": prompt_n,
             "save": save,
@@ -408,9 +441,10 @@ class RuntimeCacheManager:
 
 def workflow_prompt_for(args: argparse.Namespace, workflow: Workflow, occurrence: int) -> tuple[str, CacheMetadata, str]:
     prefix = make_workflow_prefix(workflow, args.prefix_chars, f"{args.run_tag}-runtime-{workflow.workflow_id}")
-    metadata = make_prefix_metadata(args, workflow, prefix)
+    cache_prefix = f"{prefix}\n\n"
+    metadata = make_prefix_metadata(args, workflow, cache_prefix)
     task = workflow.seed_task if occurrence == 0 else workflow.followup_task
-    return prefix, metadata, build_prompt(workflow, prefix, task)
+    return cache_prefix, metadata, build_prompt(workflow, prefix, task)
 
 
 def run_lab(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
@@ -443,11 +477,11 @@ def run_lab(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         workflow = WORKFLOWS[workflow_id]
         occurrence = seen_counts.get(workflow_id, 0)
         seen_counts[workflow_id] = occurrence + 1
-        _prefix, metadata, prompt = workflow_prompt_for(args, workflow, occurrence)
-        requests.append(manager.run_request(workflow, metadata, prompt, index))
+        prefix_prompt, metadata, prompt = workflow_prompt_for(args, workflow, occurrence)
+        requests.append(manager.run_request(workflow, metadata, prefix_prompt, prompt, index))
 
     if manager.current_dirty and args.save_on_shutdown:
-        manager.save_current("shutdown")
+        manager.save_current("shutdown", payload_scope="session")
 
     manager.save_index()
     entries = manager.index.get("entries", {})
@@ -472,6 +506,8 @@ def run_lab(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             "prefix_chars": args.prefix_chars,
             "min_cache_chars": args.min_cache_chars,
             "continued_interval_requests": args.continued_interval_requests,
+            "prefix_only_cold_save": args.prefix_only_cold_save,
+            "prefix_prefill_n_predict": args.prefix_prefill_n_predict,
             "disk_budget_mib": args.disk_budget_mib,
             "slot_save_path": args.slot_save_path,
             "artifact_dir": args.artifact_dir,
@@ -482,6 +518,8 @@ def run_lab(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
                         "sequence": sequence,
                         "min_cache_chars": args.min_cache_chars,
                         "continued_interval_requests": args.continued_interval_requests,
+                        "prefix_only_cold_save": args.prefix_only_cold_save,
+                        "prefix_prefill_n_predict": args.prefix_prefill_n_predict,
                         "disk_budget_mib": args.disk_budget_mib,
                     }
                 )
@@ -518,10 +556,17 @@ def print_report(report: dict[str, Any]) -> None:
     print(f"- artifact_mib: {summary['artifact_mib']:.2f}")
     print()
     for item in report["requests"]:
+        prefix_prefill = item["prefix_prefill"]
+        prefix_text = ""
+        if prefix_prefill:
+            prefix_text = (
+                f" prefix_prefill={prefix_prefill['latency_s']:.3f}s"
+                f" prefix_prompt_n={prefix_prefill['prompt_n']}"
+            )
         print(
-            f"- {item['workflow_id']}: source={item['source']} hit={item['cache_hit']} "
-            f"prompt_n={item['prompt_n']} restore={item['restore_latency_s']:.3f}s "
-            f"completion={item['completion_latency_s']:.3f}s"
+            f"- {item['workflow_id']}: source={item['source']} hit={item['cache_hit']}"
+            f" prompt_n={item['prompt_n']} restore={item['restore_latency_s']:.3f}s"
+            f"{prefix_text} completion={item['completion_latency_s']:.3f}s"
         )
     print()
     print(f"summary_ok: {summary['ok']}")
@@ -541,10 +586,18 @@ def main() -> int:
     parser.add_argument("--continued-interval-requests", type=int, default=2)
     parser.add_argument("--disk-budget-mib", type=float, default=512)
     parser.add_argument("--n-predict", type=int, default=16)
+    parser.add_argument("--prefix-prefill-n-predict", type=int, default=0)
     parser.add_argument("--timeout", type=float, default=240)
     parser.add_argument("--run-tag", default=str(int(time.time())))
     parser.add_argument("--clean", action="store_true")
     parser.add_argument("--save-on-shutdown", action="store_true")
+    parser.add_argument(
+        "--no-prefix-only-cold-save",
+        dest="prefix_only_cold_save",
+        action="store_false",
+        help="Disable prefix-only cold save and save after the full prompt instead.",
+    )
+    parser.set_defaults(prefix_only_cold_save=True)
     parser.add_argument(
         "--session-checkpoints-update-lookup",
         action="store_true",
