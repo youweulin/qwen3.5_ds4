@@ -549,6 +549,110 @@ Python 代理層與 metadata/hash/header 驗證不是主要瓶頸。
 長 SOP / skill / glossary / 100k context 才值得。
 ```
 
+## Workflow Policy Bench
+
+接著把同一套 external cache manager policy 套到三種本地 agent workflow：
+
+```text
+1. FB content SOP
+   固定品牌語氣 + 發文規則 + 禁用連結規則
+
+2. Translation glossary
+   固定術語表 + 台灣語氣 + 品質規則
+
+3. Rooming list QC
+   固定航空/房型/姓名檢查規則
+```
+
+新增腳本：
+
+```text
+scripts/qwen_workflow_policy_bench.py
+```
+
+這個測試的目的不是評估 Qwen3.5 4B 的最終內容品質，而是先用 4B 測：
+
+```text
+cache policy 是否通用
+不同 workflow 的 hit/miss 是否穩定
+save/restore 成本
+prompt_n 可以省多少
+```
+
+同一套 policy：
+
+```text
+cache_scope: prefix
+prefix_chars: 6000
+n_predict: 16
+miss: 先正常 completion，跑完 save slot，包成 .qkv
+hit: 從 .qkv 抽 payload，restore slot，再跑 follow-up task
+```
+
+重跑：
+
+```sh
+python3 scripts/qwen_workflow_policy_bench.py \
+  --base-url http://127.0.0.1:18180 \
+  --slot-save-path "$PWD/artifacts/workflow-policy-slots/" \
+  --artifact-dir artifacts/workflow-policy-artifacts \
+  --trace-json traces/workflow-policy-bench-2026-05-15.json \
+  --clean
+```
+
+### Workflow Policy Result
+
+本次 M1 Pro + Qwen3.5 4B 實測：
+
+```text
+FB content SOP:
+  baseline cold:       9.085s
+  manager hit total:   2.025s
+  restore:             0.019s
+  prompt_n:            3142 -> 507
+  prompt_n_saved:      2635
+  speedup:             4.49x
+
+Translation glossary:
+  baseline cold:       9.068s
+  manager hit total:   2.069s
+  restore:             0.021s
+  prompt_n:            3146 -> 513
+  prompt_n_saved:      2633
+  speedup:             4.38x
+
+Rooming list QC:
+  baseline cold:       9.151s
+  manager hit total:   2.014s
+  restore:             0.020s
+  prompt_n:            3193 -> 516
+  prompt_n_saved:      2677
+  speedup:             4.54x
+
+Average speedup:       4.47x
+```
+
+完整 trace：
+
+```text
+traces/workflow-policy-bench-2026-05-15.json
+```
+
+判讀：
+
+```text
+同一套 prefix cache policy 對三種固定 SOP workflow 都有效。
+4B 不適合用來判斷文案、翻譯、rooming QC 的最終品質，
+但很適合用來測速度、cache hit、restore 成本與 prompt_n 節省。
+```
+
+下一步：
+
+```text
+用同一套 workflow policy 換更強模型測品質，例如 Qwen3.6 27B / DS4 Flash / Gemma 3 31B。
+速度/cache 用 4B 建 baseline；品質用大模型判斷是否能產品化。
+```
+
 ### KV Artifact Performance
 
 為了確認這層外殼本身不會變成瓶頸，另外加入：

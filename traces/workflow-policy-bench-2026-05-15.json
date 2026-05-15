@@ -1,0 +1,233 @@
+{
+  "base_url": "http://127.0.0.1:18180",
+  "policy": {
+    "artifact_dir": "artifacts/workflow-policy-artifacts",
+    "cache_scope": "prefix",
+    "model_id": "qwen3.5:4b",
+    "n_predict": 16,
+    "prefix_chars": 6000,
+    "quality_note": "Qwen3.5 4B run measures speed/cache only, not final workflow quality.",
+    "same_policy_for_all_workflows": true,
+    "slot_save_path": "/Users/kevinlin911/DS4/qwen3.5_ds4/artifacts/workflow-policy-slots/"
+  },
+  "schema": "qwen3.5-ds4-workflow-policy-bench-v1",
+  "slot_id": 0,
+  "summary": {
+    "avg_speedup_vs_cold": 4.471081390888823,
+    "failed": 0,
+    "passed": 3,
+    "total": 3
+  },
+  "workflows": [
+    {
+      "baseline_no_manager_cold_followup": {
+        "completion_preview": "{\n  \"hook\": \"日本地方鐵道正忙著「迎",
+        "latency_s": 9.084974083001725,
+        "prefix_cache_key": "698564eb9d026baca948840eb05984751d610bee1d1c211b8f211ec2842960c5",
+        "prompt_n": 3142
+      },
+      "manager_hit_restore_then_followup": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3.qkv",
+        "cache_hit": true,
+        "cache_key": "bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3",
+        "cache_saved": false,
+        "completion_latency_s": 2.0059642080013873,
+        "completion_preview": "{\n  \"hook\": \"日本地方鐵道正忙著「迎",
+        "prompt_n": 507,
+        "restore_latency_s": 0.018905707998783328,
+        "restore_response": {
+          "filename": "workflow-restore-bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3.bin",
+          "id_slot": 0,
+          "n_read": 156511232,
+          "n_restored": 3166,
+          "timings": {
+            "restore_ms": 18.095
+          }
+        },
+        "save_latency_s": 0.0,
+        "save_response": null,
+        "slot_payload_sha256": null,
+        "slot_payload_size": null,
+        "total_latency_s": 2.0248699160001706
+      },
+      "manager_miss_then_save": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3.qkv",
+        "cache_hit": false,
+        "cache_key": "bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3",
+        "cache_saved": true,
+        "completion_latency_s": 9.050681207998423,
+        "completion_preview": "{\n  \"hook\": \"Calbee 14 款商品突然",
+        "prompt_n": 3151,
+        "restore_latency_s": 0.0,
+        "restore_response": null,
+        "save_latency_s": 0.05870074999984354,
+        "save_response": {
+          "filename": "workflow-save-bf763f3dc94d5d6ab268d3e54e234e1e4bb24ac913e772e945803e93e18713a3.bin",
+          "id_slot": 0,
+          "n_saved": 3166,
+          "n_written": 156511232,
+          "timings": {
+            "save_ms": 57.656
+          }
+        },
+        "slot_payload_sha256": "242a9af869cd609089e89fd6bc18b1b80ca6cce9856fa68f7b89573b09ce38d7",
+        "slot_payload_size": 156511232,
+        "total_latency_s": 9.109381957998266
+      },
+      "summary": {
+        "baseline_latency_s": 9.084974083001725,
+        "baseline_prompt_n": 3142,
+        "latency_speedup_vs_cold": 4.486695175435141,
+        "manager_hit_completion_latency_s": 2.0059642080013873,
+        "manager_hit_prompt_n": 507,
+        "manager_hit_restore_latency_s": 0.018905707998783328,
+        "manager_hit_total_latency_s": 2.0248699160001706,
+        "ok": true,
+        "prompt_n_saved": 2635,
+        "slot_payload_size": 156511232
+      },
+      "title": "FB content SOP",
+      "workflow_id": "fb"
+    },
+    {
+      "baseline_no_manager_cold_followup": {
+        "completion_preview": "{\n  \"translation\": \"為避開週末的擁擠，旅遊",
+        "latency_s": 9.068102582998108,
+        "prefix_cache_key": "aa08feadb2f18e6efe8da5007d387be84faa61f160e8b921808cbb33a55e2f12",
+        "prompt_n": 3146
+      },
+      "manager_hit_restore_then_followup": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f.qkv",
+        "cache_hit": true,
+        "cache_key": "f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f",
+        "cache_saved": false,
+        "completion_latency_s": 2.04802845899394,
+        "completion_preview": "{\n  \"translation\": \"為避開週末的擁擠，旅遊",
+        "prompt_n": 513,
+        "restore_latency_s": 0.020976250001695007,
+        "restore_response": {
+          "filename": "workflow-restore-f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f.bin",
+          "id_slot": 0,
+          "n_read": 156445648,
+          "n_restored": 3164,
+          "timings": {
+            "restore_ms": 19.964
+          }
+        },
+        "save_latency_s": 0.0,
+        "save_response": null,
+        "slot_payload_sha256": null,
+        "slot_payload_size": null,
+        "total_latency_s": 2.069004708995635
+      },
+      "manager_miss_then_save": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f.qkv",
+        "cache_hit": false,
+        "cache_key": "f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f",
+        "cache_saved": true,
+        "completion_latency_s": 9.11807145900093,
+        "completion_preview": "{\n  \"translation\": \"地方政府因訪日旅客增加，正逐步",
+        "prompt_n": 3149,
+        "restore_latency_s": 0.0,
+        "restore_response": null,
+        "save_latency_s": 0.06947079199744621,
+        "save_response": {
+          "filename": "workflow-save-f00af05343ceda3f30aca8f2b96cd593a1306fe393788d735056356d0a1df56f.bin",
+          "id_slot": 0,
+          "n_saved": 3164,
+          "n_written": 156445648,
+          "timings": {
+            "save_ms": 68.437
+          }
+        },
+        "slot_payload_sha256": "5ebce4d541eda152d800e2b410369408bd001d9ebfdbfb640d8ff343d04d24c5",
+        "slot_payload_size": 156445648,
+        "total_latency_s": 9.187542250998376
+      },
+      "summary": {
+        "baseline_latency_s": 9.068102582998108,
+        "baseline_prompt_n": 3146,
+        "latency_speedup_vs_cold": 4.382833225836432,
+        "manager_hit_completion_latency_s": 2.04802845899394,
+        "manager_hit_prompt_n": 513,
+        "manager_hit_restore_latency_s": 0.020976250001695007,
+        "manager_hit_total_latency_s": 2.069004708995635,
+        "ok": true,
+        "prompt_n_saved": 2633,
+        "slot_payload_size": 156445648
+      },
+      "title": "Translation glossary",
+      "workflow_id": "translation"
+    },
+    {
+      "baseline_no_manager_cold_followup": {
+        "completion_preview": "{\n  \"summary\": \"Rooming list 檢查完成。共 ",
+        "latency_s": 9.150906875001965,
+        "prefix_cache_key": "105305e300940bc23a78912ce6dbee53d796c2a17518dd30c348c69ce368878b",
+        "prompt_n": 3193
+      },
+      "manager_hit_restore_then_followup": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228.qkv",
+        "cache_hit": true,
+        "cache_key": "413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228",
+        "cache_saved": false,
+        "completion_latency_s": 1.9941717920009978,
+        "completion_preview": "{\n  \"summary\": \"Rooming list 檢查完成。\",\n",
+        "prompt_n": 516,
+        "restore_latency_s": 0.019798125002125744,
+        "restore_response": {
+          "filename": "workflow-restore-413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228.bin",
+          "id_slot": 0,
+          "n_read": 157921288,
+          "n_restored": 3209,
+          "timings": {
+            "restore_ms": 18.969
+          }
+        },
+        "save_latency_s": 0.0,
+        "save_response": null,
+        "slot_payload_sha256": null,
+        "slot_payload_size": null,
+        "total_latency_s": 2.0139699170031236
+      },
+      "manager_miss_then_save": {
+        "artifact_path": "artifacts/workflow-policy-artifacts/prefix-413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228.qkv",
+        "cache_hit": false,
+        "cache_key": "413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228",
+        "cache_saved": true,
+        "completion_latency_s": 9.126495208998676,
+        "completion_preview": "{\n  \"summary\": \"Rooming list 檢查完成。\",\n",
+        "prompt_n": 3194,
+        "restore_latency_s": 0.0,
+        "restore_response": null,
+        "save_latency_s": 0.1648916670019389,
+        "save_response": {
+          "filename": "workflow-save-413ec83925f11e4def8b1165b6ccbd2f17b64bf48e61ad56350ab534a2545228.bin",
+          "id_slot": 0,
+          "n_saved": 3209,
+          "n_written": 157921288,
+          "timings": {
+            "save_ms": 163.779
+          }
+        },
+        "slot_payload_sha256": "81e489ad9fe580a18c6757928c6ea2b5a1b116fd33a14bcffc75def22f890285",
+        "slot_payload_size": 157921288,
+        "total_latency_s": 9.291386876000615
+      },
+      "summary": {
+        "baseline_latency_s": 9.150906875001965,
+        "baseline_prompt_n": 3193,
+        "latency_speedup_vs_cold": 4.543715771394897,
+        "manager_hit_completion_latency_s": 1.9941717920009978,
+        "manager_hit_prompt_n": 516,
+        "manager_hit_restore_latency_s": 0.019798125002125744,
+        "manager_hit_total_latency_s": 2.0139699170031236,
+        "ok": true,
+        "prompt_n_saved": 2677,
+        "slot_payload_size": 157921288
+      },
+      "title": "Rooming list QC",
+      "workflow_id": "rooming"
+    }
+  ]
+}
